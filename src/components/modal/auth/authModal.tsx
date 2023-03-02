@@ -3,6 +3,7 @@ import React from 'react';
 import {useRecoilState} from 'recoil'
 import { authModalState } from '@/src/atoms/authModalAtom';
 import AuthInputs from './authInputs';
+import OAuthButtons from './OAuthButtons';
 
 const AuthModal:React.FC = () => {
     const [modalState, setModalState] = useRecoilState(authModalState)
@@ -29,7 +30,7 @@ const AuthModal:React.FC = () => {
                 justifyContent='center' pb={6}>
 
                     <Flex direction='column' align='center' justify='center' width='70%'>
-                        {/* <OAuthButtons/> */}
+                        <OAuthButtons/>
                         <AuthInputs/>
                         {/* <ResetPassword/> */}
                     </Flex>
