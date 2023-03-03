@@ -1,12 +1,8 @@
-import { Modal, ModalOverlay, ModalContent, ModalHeader, 
-    ModalCloseButton, ModalBody, Flex,Text,Box } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
-import {useRecoilState} from 'recoil'
-import { topicModalState } from '@/src/atoms/topicModalAtom';
+import { Box, Input, Modal, ModalBody, ModalCloseButton,
+         ModalContent, ModalHeader, ModalOverlay,
+         Text } from '@chakra-ui/react';
+import React, { useState } from 'react';
 
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/src/firebase/clientApp';
-import TopicInputs from './TopicsInput';
 
 type TopicModalProps= {
   open: boolean    
@@ -21,12 +17,27 @@ const TopicModal:React.FC<TopicModalProps> = (
   
   }  
 ) => {
-const [modalState, setModalState] = useRecoilState(topicModalState)
-const [user, loading, error] = useAuthState(auth)
+const [topicName, setTopicName] = useState('')
+const [numOfLOs, setNumOfLOs] = useState(0)
+const [error, setError] = useState('')
 
-useEffect(() =>{
-    if(user) handleClose()
-}, [user])
+const handleChange1 = (event:React.ChangeEvent<HTMLInputElement>) =>{
+  setTopicName(event.target.value)
+}
+
+const handleChange2 = (event:React.ChangeEvent<HTMLInputElement>) =>{
+  setError('')
+  setNumOfLOs(Number(event.target.value))
+
+  if(Number(event.target.value)<4 || Number(event.target.value) >8){
+    setError("Maximun is 8 and minimum is 4")
+    return
+  }
+}
+
+// useEffect(() =>{
+//     if(user) handleClose()
+// }, [user])
 return (
   <> 
     <Modal isOpen={open} onClose={handleClose}>
@@ -40,9 +51,37 @@ return (
           <ModalBody 
               display='flex' flexDirection='column' padding='10px 0px'
               justifyContent='center' pb={6}>
+
                 <Text fontWeight={600} fontSize={15}>Topic Name</Text>
-                <Text fontWeight={600} fontSize={15}>Topic Name</Text>
+                <Text
+                 fontWeight={600} fontSize={15}>
+                  <Input value={topicName} size='sm' mb={5} onChange={handleChange1}></Input>
+                </Text>
                 
+                <Text fontWeight={600} fontSize={15}>Number of Learning Objectives</Text>
+                <Text
+                 fontWeight={600} fontSize={15}>
+                  <Input value={numOfLOs} size='sm' onChange={handleChange2}></Input>
+                </Text>
+                {(Number(numOfLOs) < 4 || Number(numOfLOs) >8) ? error : ''}
+
+                <Text fontWeight={600} fontSize={15}  mt={5}>Enter Learning Obejectives</Text>
+                { (Number(numOfLOs) < 4 || Number(numOfLOs) >8) ? "Invalid Learing Objectives" :
+                    Array(+Number(numOfLOs))
+                      .fill("")
+                      .map((n, i) => {
+                        return (
+                         <Text
+                         fontWeight={600} fontSize={15}>
+                         <Input mt={2} size='sm'placeholder={String(i+1)}></Input>
+                          </Text>
+                        )
+                      })
+                  }
+
+                
+
+
           </ModalBody>
         </Box>
       </ModalContent>
