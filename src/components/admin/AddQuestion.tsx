@@ -9,7 +9,6 @@ type AddQuestionProps = {
 const AddQuestion:React.FC<AddQuestionProps> = () => {
     
     return (
-            //  Wlecome the lecturer  {user ? <div>user</div> : <div>no user</div>}
 
     // Question level
 
@@ -40,14 +39,12 @@ const AddQuestion:React.FC<AddQuestionProps> = () => {
 
 //  Drop down to enter the 4 options 
 
-// Either optional of just for the last queation
+// if level is 4  show
 // Enter number of resources 
 
 // Enter said resource
 
-// Submit 
+)
 
-
-    )
 }
 export default AddQuestion;
