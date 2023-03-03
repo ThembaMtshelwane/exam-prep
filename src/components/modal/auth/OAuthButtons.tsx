@@ -1,13 +1,19 @@
-import { Button, Flex } from '@chakra-ui/react';
+import { Button, Flex,Text } from '@chakra-ui/react';
 import React from 'react';
-
+import {useSignInWithGoogle} from 'react-firebase-hooks/auth'
+import {auth} from '../../../firebase/clientApp'
 
 const OAuthButtons:React.FC = () => {
+
+    const [signInWithGoogle, user, loading,  error, ] = useSignInWithGoogle(auth)
     return (
-        <Flex>
-            <Button bg="#265e9e" color="white" mb={2} mt={2} type='submit'
-              width='100%'>
-                Continue with Student Email</Button>
+        <Flex direction="column" width='100%' mb={4}>
+            <Button bg="#265e9e" color="white" mb={2} mt={2} type='submit' width='100%'
+              isLoading={loading} onClick={()=> signInWithGoogle()}
+            > 
+                Continue with Student Email
+            </Button>
+            {error && <Text>{error.message}</Text>}
         </Flex>
     )
 }
