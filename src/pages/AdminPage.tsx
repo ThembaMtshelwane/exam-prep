@@ -2,6 +2,7 @@ import { Flex, Icon } from '@chakra-ui/react';
 import {GrAdd} from 'react-icons/gr'
 import React,{useState} from 'react';
 import TopicModal from '../components/modal/topic/TopicModal';
+import AddQuestion from '../components/admin/AddQuestion';
 
 type AdminPageProps = {
     
@@ -20,7 +21,7 @@ const AdminPage:React.FC<AdminPageProps> = () => {
                 />
                 Add Quiz     
             </Flex>
-            {/* // Previous Quizes created -> Have access to lecturer id */}
+            <AddQuestion/>
         </>
     )
 }

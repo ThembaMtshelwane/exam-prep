@@ -4,13 +4,15 @@ import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth, firestore } from '@/src/firebase/clientApp';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { m } from 'framer-motion';
-
+import { module_Name, topic_Name } from '../modal/topic/TopicModal';
 type AddQuestionProps = {
-   // module: String
+
 };
 
-const AddQuestion:React.FC<AddQuestionProps> = () => {
+
+const AddQuestion:React.FC<AddQuestionProps> = (
+  
+) => {
   const [user] = useAuthState(auth)
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
@@ -74,12 +76,11 @@ const AddQuestion:React.FC<AddQuestionProps> = () => {
       setError('')
         //Create the quiz document in firestore
       // - check if unique
-      const module='ELEN4444'
-      const questionsDocRef= doc(firestore, module,'question') //questionName
+      const questionsDocRef= doc(firestore, 'topics/Fractions/questions',qid) //questionName
       const questionDoc = await getDoc(questionsDocRef)
   
       if(questionDoc.exists()){
-        throw new Error('Sorry, topic name is already taken. Try another.')
+        throw new Error('Sorry, question already exsists. Try another.')
       }
   
       //- if valid create quiz
@@ -91,7 +92,8 @@ const AddQuestion:React.FC<AddQuestionProps> = () => {
         questionLevel: levelNum,
         questionOptions:options,
         questionAnswer:answer,
-        questionResources: resourcelist
+        questionResources: resourcelist,
+        question
       })
       
     } catch (error:any) {
@@ -102,7 +104,6 @@ const AddQuestion:React.FC<AddQuestionProps> = () => {
       setLoading(false)
   }
 
-  
 
   return (
 
@@ -194,7 +195,7 @@ const AddQuestion:React.FC<AddQuestionProps> = () => {
     </>
 }  
 {/* // Enter said resource */}
-    { !(levelNum === 4) ? "" : 
+    { ( (!(levelNum === 4)) && !(numResources>=1 && numResources<=4) ) ? "" : 
         Array(+Number(numResources))
           .fill("")
           .map((n, i) => {

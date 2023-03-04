@@ -1,17 +1,19 @@
 import { Box, Button, Input, Modal, ModalBody, ModalCloseButton,
   ModalContent, ModalFooter, ModalHeader, ModalOverlay,
   Text } from '@chakra-ui/react';
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, getDoc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth, firestore } from '@/src/firebase/clientApp';
 
+// create
 type TopicModalProps= {
   open: boolean    
   handleClose: ()=> void
 };
+let module_Name =''
+let topic_Name =''
 
-// Create
 const TopicModal:React.FC<TopicModalProps> = (
   { open,
     handleClose 
@@ -27,20 +29,23 @@ const [loading, setLoading] = useState(false)
 
 const handleChange1 = (event:React.ChangeEvent<HTMLInputElement>) =>{
   setTopicName(event.target.value)
+  topic_Name = topicName
 }
 
 const handleModuleChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
   setModule(event.target.value)
+  module_Name = module
 }
 
 const handleChange2 = (event:React.ChangeEvent<HTMLInputElement>) =>{
   setError('')
+  setNumOfLOs(Number(event.target.value))
 
   if(Number(event.target.value)<4 || Number(event.target.value) >8){
     setError("Maximun is 8 and minimum is 4")
     return
   }
-  setNumOfLOs(Number(event.target.value))
+
 }
 
 const handleLOList = (event:React.ChangeEvent<HTMLInputElement>) =>{
@@ -70,20 +75,30 @@ const handleCreateQuiz = async () => {
       //Create the quiz document in firestore
     // - check if unique
     const topicsDocRef= doc(firestore, 'topics', topicName)
-    const topicDoc = await getDoc(topicsDocRef)
 
-    if(topicDoc.exists()){
-      throw new Error('Sorry, topic name is already taken. Try another.')
-    }
+    await runTransaction(firestore,async (transaction) => {
+      const topicDoc = await transaction.get(topicsDocRef)
+      if(topicDoc.exists()){
+        throw new Error('Sorry, topic name is already taken. Try another.')
+      }
 
-    //- if valid create quiz
-    await setDoc(topicsDocRef,{
-      creatorID : user?.uid,  //creator's ID= user ID
-      courseCode: module,
-      createdAt : serverTimestamp(), // created at == time stamp
-      // Number of learing concepts
-       numberOfLearningObjectives:numOfLOs,
-       listOFLearningObjectives:LOList
+      //- if valid create quiz
+      transaction.set(topicsDocRef,{
+        creatorID : user?.uid,  //creator's ID= user ID
+        courseCode: module,
+        createdAt : serverTimestamp(), // created at == time stamp
+        // Number of learing concepts
+         numberOfLearningObjectives:numOfLOs,
+         listOFLearningObjectives:LOList
+      })
+
+      // create quiz snipet for the user=lecture
+      transaction.set(
+        doc(firestore,`lecturers/${user?.uid}/quizSnippets`, topicName),{
+        topicId : topicName,
+        isModerator: true,
+      })
+
     })
     
   } catch (error:any) {
@@ -109,7 +124,9 @@ return (
               display='flex' flexDirection='column' padding='10px 0px'
               justifyContent='center' pb={6}>
 
-                <Text fontWeight={600} fontSize={15}>Course code</Text>
+                <Text fontWeight={600} fontSize={12} mb={5}>All quizes must contain 16 questions</Text>
+
+                <Text fontWeight={600} fontSize={15} mb={5}>Course code</Text>
                 <Text
                  fontWeight={600} fontSize={15}>
                   <Input value={module} placeholder="ELEN123A" size='sm' mb={5} onChange={handleModuleChange}></Input>
@@ -160,4 +177,7 @@ return (
   </>
 )
 }
+
+export {module_Name, topic_Name}
+
 export default TopicModal;
