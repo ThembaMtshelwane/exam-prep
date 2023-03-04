@@ -1,7 +1,7 @@
 import Navbar from '../navbar/navbar';
 import React from 'react';
 
-const layout:React.FC = ({children}) => {
+const Layout:React.FC = ({children}) => {
     
     return (
         <>
@@ -11,4 +11,4 @@ const layout:React.FC = ({children}) => {
       </>
     )
 }
-export default layout;
+export default Layout;

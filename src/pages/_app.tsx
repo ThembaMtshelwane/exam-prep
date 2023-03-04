@@ -1,11 +1,10 @@
-import type { AppProps } from 'next/app'
 import { ChakraProvider } from '@chakra-ui/react'
-import {theme} from '../chakra/theme'
-import Layout from "../components/layout/layout"
+import type { AppProps } from 'next/app'
 import { RecoilRoot } from 'recoil'
+import { theme } from '../chakra/theme'
+import AddQuestion from '../components/admin/AddQuestion'
+import Layout from "../components/layout/layout"
 import AdminPage from './AdminPage'
-import AddTopic from '../components/admin/AddTopic'
-import TopicModal from '../components/modal/topic/TopicModal'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -13,6 +12,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         <Layout>
           <Component {...pageProps} />
+          <AddQuestion/>
           <AdminPage/>
         </Layout>
       </ChakraProvider>
