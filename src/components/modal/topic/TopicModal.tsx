@@ -87,6 +87,7 @@ const handleCreateQuiz = async () => {
         creatorID : user?.uid,  //creator's ID= user ID
         courseCode: module,
         createdAt : serverTimestamp(), // created at == time stamp
+        topicID: topicName,
         // Number of learing concepts
          numberOfLearningObjectives:numOfLOs,
          listOFLearningObjectives:LOList

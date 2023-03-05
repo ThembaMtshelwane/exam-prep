@@ -1,9 +1,11 @@
-import { Box, Flex, Icon, Stack, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, Icon, Stack, Text } from '@chakra-ui/react';
 import {GrAdd} from 'react-icons/gr'
 import React,{useState} from 'react';
 import TopicModal from '../modal/topic/TopicModal';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/src/firebase/clientApp';
+import useTopicData from '@/src/hooks/useTopicData';
+import { stringify } from 'querystring';
 
 type AdminPageProps = {
     
@@ -12,11 +14,16 @@ type AdminPageProps = {
 const AdminPage:React.FC<AdminPageProps> = () => {
     const [open, setOpen] = useState(false)
     const [user] = useAuthState(auth)
+    const {topicStateValue, loading} = useTopicData()
 
     return (
         <>
             {/* Wkecome the lecturer */}
-            <Text fontSize={20} fontWeight={600} padding={5}>Welcome {user?.email}.</Text>
+            <Heading p={5}> Welcome {user?.email}.  </Heading>
+
+            <Text fontWeight={600} fontSize={15}>
+            {/* Topic Name: {String(topicStateValue.mySnippets[1].topicID)} */}
+            </Text>
   
             <TopicModal open={open} handleClose={()=> setOpen(false)} />
            
@@ -33,37 +40,29 @@ const AdminPage:React.FC<AdminPageProps> = () => {
             
             <Flex align='center' justify='center' flexDirection='column' mt='20px'>
                 <Text fontWeight={600} fontSize={15}>Previously Made Quizes (Demo)</Text>
-                {
-                    <Stack spacing={2}>
-                        <Box>
-                        <Flex direction='column' border='2px'p={2} borderColor='#265e9e' borderRadius='10px' cursor='pointer'>
-                                <Text>Topic Name: Magenestism</Text>
-                                <Text>Description:</Text>
-                                <Text>Module: PHYS1000</Text>
-                            </Flex>
-                        </Box>
 
-                        <Box>
-                        <Flex direction='column' border='2px'p={2} borderColor='#265e9e' borderRadius='10px'>
-                                <Text>Topic Name: Electrostatic</Text>
-                                <Text>Description:</Text>
-                                <Text>Module: PHYS1000</Text>
-                            </Flex>
-                        </Box>
+                <Stack spacing={2}>
+                    { 
+                        Array(+topicStateValue.mySnippets.length)
+                          .fill("")
+                          .map((n, i) => {
+                                return (
+                                  <>
+                                  <div key={i*7} >
+                                    <Flex direction='column' border='2px'p={2} borderColor='#265e9e' borderRadius='10px' cursor='pointer' >
+                                        <Text fontWeight={600} fontSize={15}>
+                                        Topic Name: {String(topicStateValue.mySnippets[i].topicID)}
+                                        </Text>
+                                    </Flex>
+                                  </div>
 
-                         <Box>
-                         <Flex direction='column' border='2px'p={2} borderColor='#265e9e' borderRadius='10px'>
-                                <Text>Topic Name: Integration</Text>
-                                <Text>Description:</Text>
-                                <Text>Module: MATH1000</Text>
-                            </Flex>
-                        </Box>
-                        
-                    </Stack>
-                /*  List
-                        Topic Name
-                        Topic Description                
-                */}
+                                  </>
+                                )
+                            })
+                    }
+
+                </Stack>
+                    <br />
             </Flex>
 
                

@@ -3,7 +3,7 @@ import {auth} from '../../firebase/clientApp'
 import React from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import AuthButtons from './authButtons';
-import { signOut } from 'firebase/auth';
+import LogOut from '../modal/auth/LogOut';
 
 // Navigation bar
 
@@ -24,7 +24,7 @@ const NavBar:React.FC= () => {
          <Spacer />
 
         <Flex justify='end' align = 'center'>
-            {user? <Button bg="#265e9e" color="white" mb={2} mt={2} onClick={()=>signOut(auth)}>Logout</Button>:<AuthButtons/>}
+            {user?<LogOut/> :<AuthButtons/>}
         </Flex>
     </Flex>
    ) 

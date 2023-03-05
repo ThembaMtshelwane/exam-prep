@@ -6,6 +6,7 @@ import { Topic } from '@/src/atoms/topicsAtom';
 import safeJsonStringify from 'safe-json-stringify'
 import NotFound from '@/src/components/Topics/NotFound';
 import AddQuestion from '@/src/components/admin/AddQuestion';
+import PageContent from '@/src/components/layout/PageContent';
 
 /// THIS SHOILD BE ITS OWN WEBSITE
 type CreateQuizProps = {
@@ -19,7 +20,9 @@ const CreateQuiz:React.FC<CreateQuizProps> = ({topicData}) => {
     }
     return (
         <>
-            <AddQuestion id={topicData.id}/>     
+            <PageContent>
+            <AddQuestion topicID={topicData.id}/>  
+            </PageContent>   
         </>
     )
 }
