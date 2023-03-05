@@ -22,7 +22,7 @@ const TopicModal:React.FC<TopicModalProps> = (
 const [user] = useAuthState(auth)
 const [topicName, setTopicName] = useState('')
 const [module, setModule] = useState('')
-const [numOfLOs, setNumOfLOs] = useState(0)
+const [numOfLOs, setNumOfLOs] = useState(4)
 const [error, setError] = useState('')
 const [LOList, setLOList] = useState([])
 const [loading, setLoading] = useState(false)
@@ -142,7 +142,7 @@ return (
                 <Text fontSize='9pt' color='red'>{error}</Text>
 
                 
-                <Text fontWeight={600} fontSize={15}>Number of Learning Objectives</Text>
+                <Text fontWeight={600} fontSize={15}>Number of Learning Objectives (Between 4 and 8)</Text>
                 <Text
                  fontWeight={600} fontSize={15}>
                   <Input value={numOfLOs} size='sm' name="numOfLOs"onChange={handleChange2}></Input>

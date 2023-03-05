@@ -4,15 +4,13 @@ import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth, firestore } from '@/src/firebase/clientApp';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { module_Name, topic_Name } from '../modal/topic/TopicModal';
-type AddQuestionProps = {
 
+type AddQuestionProps = {
+    id:string 
 };
 
 
-const AddQuestion:React.FC<AddQuestionProps> = (
-  
-) => {
+const AddQuestion:React.FC<AddQuestionProps> = ({ id }) => {
   const [user] = useAuthState(auth)
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
@@ -108,6 +106,10 @@ const AddQuestion:React.FC<AddQuestionProps> = (
   return (
 
       <>
+    <Text>
+        Create a {id} quiz
+    </Text>
+
     {/* // Question level */}
     <Text fontWeight={600} fontSize={15}>Level</Text>
     <Text

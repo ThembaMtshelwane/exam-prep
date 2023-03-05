@@ -3,7 +3,6 @@ import type { AppProps } from 'next/app'
 import { RecoilRoot } from 'recoil'
 import { theme } from '../chakra/theme'
 import Layout from "../components/layout/layout"
-import AdminPage from './AdminPage'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -11,7 +10,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         <Layout>
           <Component {...pageProps} />
-          {/* <AdminPage/> */}
         </Layout>
       </ChakraProvider>
     </RecoilRoot>

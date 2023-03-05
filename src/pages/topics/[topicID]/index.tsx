@@ -5,18 +5,23 @@ import React from 'react';
 import { Topic } from '@/src/atoms/topicsAtom';
 import safeJsonStringify from 'safe-json-stringify'
 import NotFound from '@/src/components/Topics/NotFound';
+import AddQuestion from '@/src/components/admin/AddQuestion';
 
 /// THIS SHOILD BE ITS OWN WEBSITE
-type AdminPageProps = {
+type CreateQuizProps = {
     topicData: Topic
 };
 
-const AdminPage:React.FC<AdminPageProps> = ({topicData}) => {
+const CreateQuiz:React.FC<CreateQuizProps> = ({topicData}) => {
     
     if(!topicData){
         return <NotFound/>
     }
-    return <div>Welcome to {topicData.id}</div>
+    return (
+        <>
+            <AddQuestion id={topicData.id}/>     
+        </>
+    )
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -46,4 +51,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 }
 
-export default AdminPage;
+export default CreateQuiz;
