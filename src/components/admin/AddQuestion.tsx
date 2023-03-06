@@ -210,6 +210,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
             .map((n, i) => {
               return (
                 <>
+                <div key={i*8} ></div>
                <Text
                fontWeight={600} fontSize={15}>
                 Resource
