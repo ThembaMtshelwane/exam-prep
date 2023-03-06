@@ -5,6 +5,7 @@ import { doc, getDoc, runTransaction, serverTimestamp, setDoc } from 'firebase/f
 import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth, firestore } from '@/src/firebase/clientApp';
+import {useRouter} from 'next/router'
 
 // create
 type TopicModalProps= {
@@ -19,6 +20,7 @@ const TopicModal:React.FC<TopicModalProps> = (
     handleClose 
   }  
 ) => {
+const router = useRouter()
 const [user] = useAuthState(auth)
 const [topicName, setTopicName] = useState('')
 const [module, setModule] = useState('')
@@ -99,7 +101,7 @@ const handleCreateQuiz = async () => {
         topicId : topicName,
         isModerator: true,
       })
-
+      router.push(`topics/${topicName}`)
     })
     
   } catch (error:any) {

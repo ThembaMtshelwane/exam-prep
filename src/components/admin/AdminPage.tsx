@@ -5,7 +5,6 @@ import TopicModal from '../modal/topic/TopicModal';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/src/firebase/clientApp';
 import useTopicData from '@/src/hooks/useTopicData';
-import { stringify } from 'querystring';
 
 type AdminPageProps = {
     

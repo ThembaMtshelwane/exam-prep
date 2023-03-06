@@ -5,10 +5,10 @@ import { authModalState } from '@/src/atoms/authModalAtom';
 import {useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import {auth} from '../../../firebase/clientApp'
 import {FIREBASE_ERRORS} from '../../../firebase/errors'
-
+import {useRouter} from 'next/router'
 
 const Register:React.FC = () => {
-    
+    const router = useRouter()
     const setAuthModalState = useSetRecoilState(authModalState)
     const [registerForm, setRegisterForm] = useState({
         email:'',
@@ -39,6 +39,7 @@ const Register:React.FC = () => {
             return
         }
         createUserWithEmailAndPassword(registerForm.email,registerForm.password)
+        router.push('/dashboard')
     }
 
     // When user types the an input, update the state

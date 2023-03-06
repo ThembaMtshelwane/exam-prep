@@ -31,8 +31,9 @@ const useTopicData= () => {
                  }),
             )
 
-        } catch (error) {
+        } catch (error:any) {
             console.log('getMySnippets error', error)
+            setError(error.message)
         }
         setLoading(false)
     }
