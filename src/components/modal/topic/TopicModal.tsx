@@ -159,10 +159,14 @@ return (
                       .fill("")
                       .map((n, i) => {
                         return (
-                         <Text
+                          <>
+                            <div key={i*7} ></div>
+                           <Text
                          fontWeight={600} fontSize={15}>
                          <Input mt={2} size='sm'placeholder={String(i+1)} name={String(i+1)} onChange={handleLOList}></Input>
-                          </Text>
+                          </Text>       
+                          </>
+   
                         )
                       })
                   }
