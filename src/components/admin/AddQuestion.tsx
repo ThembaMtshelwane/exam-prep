@@ -178,6 +178,8 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
       <Text fontWeight={600} fontSize={15}>Options</Text>
       { Array(+4).fill("").map((n, i) => {
           return (
+            <>
+          <div key={i*7} ></div>
            <Text
               fontWeight={600} fontSize={15}>
               <Input mt={2} size='sm'placeholder={String(i+1)}
@@ -185,6 +187,8 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
 
               </Input>
             </Text>
+            
+            </>
           )
          })
       }
