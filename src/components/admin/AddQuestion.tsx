@@ -2,7 +2,8 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Button, Flex, Heading, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList,Text, VisuallyHidden,Image } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import {auth, firestore } from '@/src/firebase/clientApp';
+import {auth, firestore, storage } from '@/src/firebase/clientApp';
+import {ref, uploadBytes,listAll } from 'firebase/storage';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 type AddQuestionProps = {
@@ -19,6 +20,11 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   const [levelNum, setLevel] = useState(0)
   const [numResources, setNumResources] = useState(0)
   const [resourcelist, setResourceList] = useState([])
+
+  const [isUploadFile, setIsUploadFile] = useState(false)
+  const [fileUpload, setFileUpload] = useState(null)
+  const [fileList, setFileList] = useState([])
+
   const [loading, setLoading] = useState(false)
   
   const [error, setError] = useState('')
@@ -68,6 +74,28 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   }))
   }
 
+  const handleFileUpload =() =>{
+    setIsUploadFile(true)
+  }
+
+  const uploadFile=()=>{
+    if(fileUpload===null) return
+
+    const fileListRef = ref(storage,`questionFiles/${topicID}/`)
+    const fileRef = ref(storage,`questionFiles/${topicID}/${qid}`)
+    uploadBytes(fileRef,fileUpload)
+    .then(()=>{
+      alert('image uploaded')
+      listAll(fileListRef).then((response)=>{
+        console.log(response)
+      })
+    })
+
+  //   setFileList(prev =>({
+  //     ...prev,
+  //     [event.target.name]: event.target.value
+  // }))
+  }
 
   const handleCreateQuestion = async () =>{
     setLoading(true)
@@ -89,6 +117,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
         questionOptions:options,
         questionAnswer:answer,
         questionResources: resourcelist,
+        questionFiles: fileList,
         question,
       })
       // questionCounter = questionCounter +1
@@ -140,39 +169,20 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
         src='/images/exam-prep-student-id-labelling.PNG'
         alt='Id Labelling'
       />
-
-      {/* // Question - Have a choice between text, images and a pdf file */}
-      <VisuallyHidden>
-        <Menu>
-        <MenuButton as={Button} rightIcon={<ChevronDownIcon/>} cursor='pointer'>
-            Question type
-        </MenuButton>
-        <br />
-        <MenuList>
-             <MenuItem 
-                onClick={()=>{}}>  {/* Handle Text */}
-                Text
-              </MenuItem>  
-             <MenuDivider/>
-             <MenuItem 
-                onClick={()=>{}}>  {/* Handle images */}
-                Image
-              </MenuItem>    
-             <MenuDivider/>  
-             <MenuItem 
-                onClick={()=>{}}>  {/* Handle PDF files */}
-                PDF
-             </MenuItem>     
-        </MenuList>
-      </Menu>
-      </VisuallyHidden>
-
+    
       <Text fontWeight={600} fontSize={15}>Question (Text is the default)</Text>
-      <Text
-       fontWeight={600} fontSize={15}>
+      <Text fontWeight={600} fontSize={15}>
         <Input value={question} size='sm'placeholder='What is the colour of the sky?'  onChange={handleQuestionChange} 
         mb={15} name='questionText'></Input>
       </Text>
+      <Button onClick={handleFileUpload}>Add File</Button>
+      {!isUploadFile ?'' :
+        <>
+          <input type="file"  onChange={(event)=>{setFileUpload(event.target.files[0])}}/>
+          {/* <Input type='file' onChange={(event)=>{setFile(event.target.files)}}/> */}
+          <Button onClick={uploadFile}>Upload File</Button>
+        </>
+      }
 
       {/* // Enter the answer */}
       <Text fontWeight={600} fontSize={15}>Answer</Text>
