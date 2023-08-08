@@ -29,6 +29,8 @@ const [error, setError] = useState('')
 const [LOList, setLOList] = useState([])
 const [loading, setLoading] = useState(false)
 
+const MIN_LEARNING_OBJECTIVES =4
+const MAX_LEARNING_OBJECTIVES =8
 const handleChange1 = (event:React.ChangeEvent<HTMLInputElement>) =>{
   setTopicName(event.target.value)
   topic_Name = topicName
@@ -63,7 +65,7 @@ const handleCreateQuiz = async () => {
   const format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
 
   if (format.test(module)) {
-    setError('ModuTopic names must only contain letters, numbers or underscores')
+    setError('Topic names must only contain letters or numbers.')
     return
   }
 
@@ -150,11 +152,11 @@ return (
                  fontWeight={600} fontSize={15}>
                   <Input value={numOfLOs} size='sm' name="numOfLOs"onChange={handleChange2}></Input>
                 </Text>
-                {(numOfLOs < 4 || numOfLOs >8) ? error : ''}
+                {(numOfLOs < MIN_LEARNING_OBJECTIVES || numOfLOs >MAX_LEARNING_OBJECTIVES) ? error : ''}
 
 
                 <Text fontWeight={600} fontSize={15}  mt={5}>Enter Learning Obejectives</Text>
-                { (numOfLOs < 4 || numOfLOs >8) ? "Invalid Learing Objectives" :
+                { (numOfLOs < MIN_LEARNING_OBJECTIVES || numOfLOs >MAX_LEARNING_OBJECTIVES) ? "Invalid Learing Objectives" :
                     Array(+Number(numOfLOs))
                       .fill("")
                       .map((n, i) => {

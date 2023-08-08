@@ -8,7 +8,6 @@ import NotFound from '@/src/components/Topics/NotFound';
 import AddQuestion from '@/src/components/admin/AddQuestion';
 import PageContent from '@/src/components/layout/PageContent';
 
-/// THIS SHOILD BE ITS OWN WEBSITE
 type CreateQuizProps = {
     topicData: Topic
 };

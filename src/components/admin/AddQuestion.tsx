@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Button, Flex, Heading, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList,Text, VisuallyHidden } from '@chakra-ui/react';
+import { Button, Flex, Heading, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList,Text, VisuallyHidden,Image } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth, firestore } from '@/src/firebase/clientApp';
@@ -134,6 +134,12 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
         <Input value={qid} size='sm'placeholder='1.1.1'  onChange={handleIDChange} 
         mb={15} name='questionID'></Input>
       </Text>
+
+      <Image
+        objectFit='cover'
+        src='/images/exam-prep-student-id-labelling.PNG'
+        alt='Id Labelling'
+      />
 
       {/* // Question - Have a choice between text, images and a pdf file */}
       <VisuallyHidden>
