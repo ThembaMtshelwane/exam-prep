@@ -3,7 +3,7 @@ import { Button, Flex, Heading, Input, Menu, MenuButton, MenuDivider, MenuItem, 
 import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth, firestore, storage } from '@/src/firebase/clientApp';
-import {ref, uploadBytes,listAll } from 'firebase/storage';
+import {ref, uploadBytes,listAll,getDownloadURL } from 'firebase/storage';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 type AddQuestionProps = {
@@ -15,33 +15,28 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   const [user] = useAuthState(auth)
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
-  const [qid, setQuestionID] = useState('')
-  const [options, setOptions] = useState([])
-  const [levelNum, setLevel] = useState(0)
+  const [qid, setQuestionID] = useState<string>('1');
+  const [options, setOptions] = useState<any[]>([])
+  const [levelNum, setLevel] = useState<number>(1);
   const [numResources, setNumResources] = useState(0)
-  const [resourcelist, setResourceList] = useState([])
+  const [count, setCount] =useState<number>(0);
+
+  // const [resourcelist, setResourceList] = useState([])
+  const [resourcelist, setResourceList] = useState<any[]>([])
 
   const [isUploadFile, setIsUploadFile] = useState(false)
   const [fileUpload, setFileUpload] = useState(null)
-  const [fileList, setFileList] = useState([])
+  const [fileLink, setFileLink] = useState('')
 
   const [loading, setLoading] = useState(false)
   
   const [error, setError] = useState('')
 
-  const handleLevelChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
-    setError('')
-    setLevel(Number(event.target.value))
-  
-    if(Number(event.target.value)<1 || Number(event.target.value) >4){
-      setError("Maximun is 4 and minimum is 1")
-      return
-    }
-  }
-
-  const handleIDChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
-    setQuestionID(event.target.value)
-  }
+  const levelOne = ['1']
+  const levelTwo = ['1.1','1.2']
+  const levelThree = ['1.1.1','1.1.2','1.2.1','1.2.2']
+  const levelFour = ['1.1.1.1', '1.1.1.2', '1.1.2.1', '1.1.2.2', '1.2.1.1', '1.2.1.2', '1.2.2.1', '1.2.2.2']
+  const quizLevelCount : string[][]= [levelOne,levelTwo,levelThree,levelFour]
 
   const handleQuestionChange =(event:React.ChangeEvent<HTMLInputElement>) =>{
     setQuestion(event.target.value)
@@ -57,10 +52,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   }
 
   const handleResourceChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
-    setResourceList(prev =>({
-      ...prev,
-      [event.target.name]: event.target.value
-  }))
+    setResourceList(prev =>[...prev, event.target.value])
   }
 
   const handleAnswerChange= (event:React.ChangeEvent<HTMLInputElement>) =>{
@@ -68,10 +60,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   }
 
   const handleOptions = (event:React.ChangeEvent<HTMLInputElement>) =>{
-    setOptions(prev =>({
-      ...prev,
-      [event.target.name]: event.target.value
-  }))
+    setOptions(prev =>[...prev, event.target.value])
   }
 
   const handleFileUpload =() =>{
@@ -81,20 +70,16 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   const uploadFile=()=>{
     if(fileUpload===null) return
 
-    const fileListRef = ref(storage,`questionFiles/${topicID}/`)
     const fileRef = ref(storage,`questionFiles/${topicID}/${qid}`)
     uploadBytes(fileRef,fileUpload)
     .then(()=>{
-      alert('image uploaded')
-      listAll(fileListRef).then((response)=>{
-        console.log(response)
+      alert('file uploaded')
+      getDownloadURL(fileRef).then((url)=>{
+        setFileLink(url.toString())
+        console.log('file link url',url)
+        console.log('file link',fileLink)
       })
     })
-
-  //   setFileList(prev =>({
-  //     ...prev,
-  //     [event.target.name]: event.target.value
-  // }))
   }
 
   const handleCreateQuestion = async () =>{
@@ -110,14 +95,14 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
         throw new Error('Sorry, question already exsists. Try another.')
       }
   
-      //- if valid create quiz
+      //- if add a question
       await setDoc(questionsDocRef,{
         questionID: qid,
         questionLevel: levelNum,
         questionOptions:options,
         questionAnswer:answer,
         questionResources: resourcelist,
-        questionFiles: fileList,
+        fileURL: fileLink,
         question,
       })
       // questionCounter = questionCounter +1
@@ -129,8 +114,33 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
       
     }
       setLoading(false)
+   
+      const currentLevelArray: string[] = getIdArray(quizLevelCount,levelNum)
+      console.log('cureent ID at NEXT ',qid)
+      console.log('cureent LEVEL at NEXT ',levelNum)
+      console.log('currentLevelArray at NEXT ',currentLevelArray)
+      console.log('count at NEXT ',count)
+      if (count+1 === currentLevelArray.length) {
+        setLevel(levelNum+1)
+        setCount(0)
+        console.log('end of level count ',count)
+        console.log('end of level levelNum ',levelNum)
+      }else {
+       setCount(count+1)
+      }
+      const nextLevelArray: string[] = getIdArray(quizLevelCount,levelNum)
+      setQuestionID(nextLevelArray[count])
+      console.log('following ID at NEXT ',qid)
+      console.log('following LEVEL at NEXT ',levelNum)
+      console.log('following array at NEXT ',currentLevelArray)
+
+
+      // window. location. reload()
   }
 
+  const getIdArray = (allLevelsArray:string[][],level:number) =>{
+    return allLevelsArray[level-1]
+  }
   const returnToDasboard = () =>{
 
   }
@@ -143,25 +153,11 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
 
       <Heading> Create a {topicID} quiz </Heading>
  
-      {/* // Question level */}
-      <Text fontWeight={600} fontSize={15}>Level</Text>
-      <Text
-       fontWeight={600} fontSize={15}>
-        <Input value={levelNum} size='sm' placeContent='1' onChange={handleLevelChange} mb={15}></Input>
-      </Text>
-
-      {(Number(levelNum) < 1 || Number(levelNum) >8) ? error : ''} 
-
-      <Text fontWeight={600} fontSize={15}>Question ID</Text>
+      <Text fontWeight={600} fontSize={15}>Instructions</Text>
       <Text fontWeight={600} fontSize={12}>
         The main question (level 1 question) will have an id of 1 
         The secondary questions (level 2 question) will have ids 1.1 and 1.2, the following
         level questions will have an ID of 1.1.1, 1.1.2, 1.2.1 and 1.2.2
-      </Text>
-      <Text
-       fontWeight={600} fontSize={15}>
-        <Input value={qid} size='sm'placeholder='1.1.1'  onChange={handleIDChange} 
-        mb={15} name='questionID'></Input>
       </Text>
 
       <Image
@@ -170,6 +166,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
         alt='Id Labelling'
       />
     
+      <Text fontWeight={600} fontSize={15}>You are now adding question {qid} in level {levelNum} </Text>
       <Text fontWeight={600} fontSize={15}>Question (Text is the default)</Text>
       <Text fontWeight={600} fontSize={15}>
         <Input value={question} size='sm'placeholder='What is the colour of the sky?'  onChange={handleQuestionChange} 
