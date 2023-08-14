@@ -45,11 +45,10 @@ const handleChange2 = (event:React.ChangeEvent<HTMLInputElement>) =>{
   setError('')
   setNumOfLOs(Number(event.target.value))
 
-  if(Number(event.target.value)<4 || Number(event.target.value) >8){
-    setError("Maximun is 8 and minimum is 4")
-    return
-  }
-
+    if(Number(event.target.value)<4 || Number(event.target.value) >8){
+      setError("Maximun is 8 and minimum is 4")
+      return
+    }
 }
 
 const handleLOList = (event:React.ChangeEvent<HTMLInputElement>) =>{

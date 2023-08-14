@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Button, Flex, Heading, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList,Text, VisuallyHidden,Image } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth, firestore, storage } from '@/src/firebase/clientApp';
 import {ref, uploadBytes,listAll,getDownloadURL } from 'firebase/storage';
@@ -114,37 +114,22 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
       
     }
       setLoading(false)
-   
-      const currentLevelArray: string[] = getIdArray(quizLevelCount,levelNum)
-      console.log('cureent ID at NEXT ',qid)
-      console.log('cureent LEVEL at NEXT ',levelNum)
-      console.log('currentLevelArray at NEXT ',currentLevelArray)
-      console.log('count at NEXT ',count)
-      if (count+1 === currentLevelArray.length) {
-        setLevel(levelNum+1)
-        setCount(0)
-        console.log('end of level count ',count)
-        console.log('end of level levelNum ',levelNum)
-      }else {
-       setCount(count+1)
-      }
-      const nextLevelArray: string[] = getIdArray(quizLevelCount,levelNum)
-      setQuestionID(nextLevelArray[count])
-      console.log('following ID at NEXT ',qid)
-      console.log('following LEVEL at NEXT ',levelNum)
-      console.log('following array at NEXT ',currentLevelArray)
-
-
-      // window. location. reload()
   }
 
-  const getIdArray = (allLevelsArray:string[][],level:number) =>{
-    return allLevelsArray[level-1]
+  const nextQuestion = ()=>{
+    if (count+1 === quizLevelCount[levelNum-1].length) {
+      setCount(0)
+      setLevel(levelNum+1)
+      console.log('level at END of level ',levelNum)
+      console.log('Current array at END of level',quizLevelCount[levelNum-1])
+      setQuestionID(quizLevelCount[levelNum][count])
+    } else {
+      setCount(count+1)
+      console.log('The current level is ',levelNum)
+      console.log('Current arrays',quizLevelCount[levelNum-1])
+      setQuestionID(quizLevelCount[levelNum-1][count])
+    }
   }
-  const returnToDasboard = () =>{
-
-  }
-
 
   return (
 
@@ -167,12 +152,16 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
       />
     
       <Text fontWeight={600} fontSize={15}>You are now adding question {qid} in level {levelNum} </Text>
+     
       <Text fontWeight={600} fontSize={15}>Question (Text is the default)</Text>
+     
       <Text fontWeight={600} fontSize={15}>
         <Input value={question} size='sm'placeholder='What is the colour of the sky?'  onChange={handleQuestionChange} 
         mb={15} name='questionText'></Input>
       </Text>
+     
       <Button onClick={handleFileUpload}>Add File</Button>
+     
       {!isUploadFile ?'' :
         <>
           <input type="file"  onChange={(event)=>{setFileUpload(event.target.files[0])}}/>
@@ -245,6 +234,9 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
 
       {/* Sumbit */}
       <Button bg= "#265e9e" color="white" margin="2px"  onClick={handleCreateQuestion} isLoading={loading}>
+        Submit
+      </Button>
+      <Button bg= "#265e9e" color="white" margin="2px"  onClick={nextQuestion} isLoading={loading}>
         Next
       </Button>
 
