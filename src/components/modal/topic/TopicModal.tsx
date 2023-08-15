@@ -160,15 +160,13 @@ return (
                       .fill("")
                       .map((n, i) => {
                         return (
-                          <>
                             <div key={i*7} >
-                              <Text fontWeight={600} fontSize={15} key={i*9}>
+                              <Text fontWeight={600} fontSize={15}>
                                 <Input mt={2} size='sm'placeholder={String(i+1)} name={String(i+1)} onChange={handleLOList}></Input>
                               </Text>   
-                            </div>
-                          </>
-   
+                            </div>   
                         )
+                        
                       })
                   }
           </ModalBody>

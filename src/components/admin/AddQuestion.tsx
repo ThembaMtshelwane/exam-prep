@@ -20,8 +20,8 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   const [levelNum, setLevel] = useState<number>(1);
   const [numResources, setNumResources] = useState(0)
   const [count, setCount] =useState<number>(0);
-
-  // const [resourcelist, setResourceList] = useState([])
+  const [levelText, setLevelText] = useState<string>('');
+  const [isAddingQuestions, setIsAddingQuestions] = useState<boolean>(true);
   const [resourcelist, setResourceList] = useState<any[]>([])
 
   const [isUploadFile, setIsUploadFile] = useState(false)
@@ -37,6 +37,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   const levelThree = ['1.1.1','1.1.2','1.2.1','1.2.2']
   const levelFour = ['1.1.1.1', '1.1.1.2', '1.1.2.1', '1.1.2.2', '1.2.1.1', '1.2.1.2', '1.2.2.1', '1.2.2.2']
   const quizLevelCount : string[][]= [levelOne,levelTwo,levelThree,levelFour]
+  let counting =1
 
   const handleQuestionChange =(event:React.ChangeEvent<HTMLInputElement>) =>{
     setQuestion(event.target.value)
@@ -65,6 +66,9 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
 
   const handleFileUpload =() =>{
     setIsUploadFile(true)
+  }
+  const handleFileUploadClose =() =>{
+    setIsUploadFile(false)
   }
 
   const uploadFile=()=>{
@@ -111,24 +115,29 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
     } catch (error:any) {
       console.log('handleCreateQuiz error ',error)
       setError(error.message)
-      
     }
       setLoading(false)
+
+
+      if (count+1 === quizLevelCount[levelNum-1].length) {
+        setCount(0)
+        setLevel(levelNum+1)
+        setLevelText('The next level is')
+        setIsAddingQuestions(false)
+      } else {
+        setCount(count+1)
+        setLevelText('')
+        setIsAddingQuestions(true)
+      }
   }
 
   const nextQuestion = ()=>{
-    if (count+1 === quizLevelCount[levelNum-1].length) {
-      setCount(0)
-      setLevel(levelNum+1)
-      console.log('level at END of level ',levelNum)
-      console.log('Current array at END of level',quizLevelCount[levelNum-1])
-      setQuestionID(quizLevelCount[levelNum][count])
-    } else {
-      setCount(count+1)
-      console.log('The current level is ',levelNum)
-      console.log('Current arrays',quizLevelCount[levelNum-1])
-      setQuestionID(quizLevelCount[levelNum-1][count])
+    if(levelNum>4){
+      setLevelText('QUIZ COMPLETE AT LEVEL ')
+      return
     }
+    setQuestionID(quizLevelCount[levelNum-1][count])
+    setIsAddingQuestions(true)
   }
 
   return (
@@ -150,92 +159,108 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
         src='/images/exam-prep-student-id-labelling.PNG'
         alt='Id Labelling'
       />
+     
+     {isAddingQuestions && levelNum<=4 ? 
+      <div>
+          <Text fontWeight={600} fontSize={15}>You are now adding question {qid} in level {levelNum} </Text>
+
+          <Text fontWeight={600} fontSize={15}>Question (Text is the default)</Text>
+     
+     <Text fontWeight={600} fontSize={15}>
+       <Input value={question} size='sm'placeholder='What is the colour of the sky?'  onChange={handleQuestionChange} 
+       mb={15} name='questionText'></Input>
+     </Text>
     
-      <Text fontWeight={600} fontSize={15}>You are now adding question {qid} in level {levelNum} </Text>
-     
-      <Text fontWeight={600} fontSize={15}>Question (Text is the default)</Text>
-     
-      <Text fontWeight={600} fontSize={15}>
-        <Input value={question} size='sm'placeholder='What is the colour of the sky?'  onChange={handleQuestionChange} 
-        mb={15} name='questionText'></Input>
-      </Text>
-     
-      <Button onClick={handleFileUpload}>Add File</Button>
-     
-      {!isUploadFile ?'' :
-        <>
-          <input type="file"  onChange={(event)=>{setFileUpload(event.target.files[0])}}/>
-          {/* <Input type='file' onChange={(event)=>{setFile(event.target.files)}}/> */}
-          <Button onClick={uploadFile}>Upload File</Button>
-        </>
-      }
+     <Button onClick={handleFileUpload}>Add File</Button>
+    
+     {!isUploadFile ?'' :
+       <>
+         <input type="file"  onChange={(event)=>{setFileUpload(event.target.files[0])}}/>
+         <Flex>
+            <Button onClick={uploadFile}>Upload File</Button>
+            <Button onClick={handleFileUploadClose}>Close</Button>
+         </Flex>
+        
+       </>
+     }
 
-      {/* // Enter the answer */}
-      <Text fontWeight={600} fontSize={15}>Answer</Text>
-      <Text fontWeight={600} fontSize={15}> 
-            <Input value={answer} size='sm' name='answer' onChange={handleAnswerChange} ></Input> </Text>
+     {/* // Enter the answer */}
+     <Text fontWeight={600} fontSize={15}>Answer</Text>
+     <Text fontWeight={600} fontSize={15}> 
+           <Input value={answer} size='sm' name='answer' onChange={handleAnswerChange} ></Input> </Text>
 
-      <br />
-      {/* //  Drop down to enter the 4 options  */}
-      <Text fontWeight={600} fontSize={15}>Options</Text>
-      { Array(+4).fill("").map((n, i) => {
-          return (
-            <>
-          <div key={i*7} ></div>
-           <Text
-              fontWeight={600} fontSize={15}>
-              <Input mt={2} size='sm'placeholder={String(i+1)}
-              name={String(i+1)} onChange={handleOptions}>
-
-              </Input>
-            </Text>
-            
-            </>
-          )
-         })
-      }
-
-      <Text fontSize='9pt' color='red'>{error}</Text>
-
-      {/* // if level is 4  show
-      // Enter number of resources  */}
-      {!(levelNum === 4) ? "" : 
-          <>
-          <Text fontWeight={600} fontSize={15}>Number of Resources</Text>
+     <br />
+     {/* //  Drop down to enter the 4 options  */}
+     <Text fontWeight={600} fontSize={15}>Options</Text>
+     { Array(+4).fill("").map((n, i) => {
+         return (
+           <>
+         <div key={i*7} ></div>
           <Text
              fontWeight={600} fontSize={15}>
-            <Input value={numResources} size='sm' onChange={handleNumResourceChange}></Input>
-          </Text>
-          </>
-      }  
+             <Input mt={2} size='sm'placeholder={String(i+1)}
+             name={String(i+1)} onChange={handleOptions}>
 
-      {/* // Enter said resource */}
-      { ( (!(levelNum === 4)) && !(numResources>=1 && numResources<=4) ) ? "" : 
-          Array(+Number(numResources))
-            .fill("")
-            .map((n, i) => {
-              return (
-                <>
-                <div key={i*8} ></div>
-               <Text
-               fontWeight={600} fontSize={15}>
-                Resource
-               </Text>
-               <Text
-               fontWeight={600} fontSize={15}>
-               <Input mt={2} size='sm' placeholder={`Link ${String(i+1)}`} 
-               onChange={handleResourceChange} name={String(i+1)}></Input>
-               </Text>
-                </>
+             </Input>
+           </Text>
+           
+           </>
+         )
+        })
+     }
 
-              )
-            })
-        }
+     <Text fontSize='9pt' color='red'>{error}</Text>
 
-      {/* Sumbit */}
-      <Button bg= "#265e9e" color="white" margin="2px"  onClick={handleCreateQuestion} isLoading={loading}>
-        Submit
-      </Button>
+     {/* // if level is 4  show
+     // Enter number of resources  */}
+     {!(levelNum === 4) ? "" : 
+         <>
+         <Text fontWeight={600} fontSize={15}>Number of Resources</Text>
+         <Text
+            fontWeight={600} fontSize={15}>
+           <Input value={numResources} size='sm' onChange={handleNumResourceChange}></Input>
+         </Text>
+         </>
+     }  
+
+     {/* // Enter said resource */}
+     { ( (!(levelNum === 4)) && !(numResources>=1 && numResources<=4) ) ? "" : 
+         Array(+Number(numResources))
+           .fill("")
+           .map((n, i) => {
+             return (
+               <>
+               <div key={i*8} ></div>
+              <Text
+              fontWeight={600} fontSize={15}>
+               Resource
+              </Text>
+              <Text
+              fontWeight={600} fontSize={15}>
+              <Input mt={2} size='sm' placeholder={`Link ${String(i+1)}`} 
+              onChange={handleResourceChange} name={String(i+1)}></Input>
+              </Text>
+               </>
+
+             )
+           })
+       }
+
+     {/* Sumbit */}
+     <Button bg= "#265e9e" color="white" margin="2px"  onClick={handleCreateQuestion} isLoading={loading}>
+       Submit
+     </Button>
+      </div>
+
+      
+      
+      :levelNum<=4 ? <Text fontWeight={600} fontSize={15}> The next level is {levelNum} </Text>
+          :<Text fontWeight={600} fontSize={15}> QUIZ COMPLETE</Text>
+      
+     }
+      
+     
+     
       <Button bg= "#265e9e" color="white" margin="2px"  onClick={nextQuestion} isLoading={loading}>
         Next
       </Button>
