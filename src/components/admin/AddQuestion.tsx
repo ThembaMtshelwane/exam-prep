@@ -1,10 +1,10 @@
-import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Button, Flex, Heading, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList,Text, VisuallyHidden,Image } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth, firestore, storage } from '@/src/firebase/clientApp';
-import {ref, uploadBytes,listAll,getDownloadURL } from 'firebase/storage';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import {ref, uploadBytes,getDownloadURL } from 'firebase/storage';
+import { doc, getDoc, setDoc} from 'firebase/firestore';
+import { Link } from 'react-router-dom';
 
 type AddQuestionProps = {
   topicID:string,
@@ -260,10 +260,18 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
      }
       
      
-     
-      <Button bg= "#265e9e" color="white" margin="2px"  onClick={nextQuestion} isLoading={loading}>
-        Next
-      </Button>
+     {levelNum<=4 ?
+        <Button bg= "#265e9e" color="white" margin="2px"  onClick={nextQuestion} isLoading={loading}>
+           Next
+        </Button>
+     :
+     <Link href={'/dashboard'}>
+        <Button bg= "#265e9e" color="white" margin="2px"  onClick={nextQuestion} isLoading={loading}>
+          BACK
+        </Button>
+     </Link>
+      }
+
 
       {/* {!(questionCounter === 16) ? "" : 
           <>

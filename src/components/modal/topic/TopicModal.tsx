@@ -61,7 +61,7 @@ const handleLOList = (event:React.ChangeEvent<HTMLInputElement>) =>{
 // () => {}
 const handleCreateQuiz = async () => {
   //Validate the quiz topic name
-  const format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  const format = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
 
   if (format.test(module)) {
     setError('Topic names must only contain letters or numbers.')
@@ -85,23 +85,22 @@ const handleCreateQuiz = async () => {
         throw new Error('Sorry, topic name is already taken. Try another.')
       }
 
-      //- if valid create quiz
-      transaction.set(topicsDocRef,{
-        creatorID : user?.uid,  //creator's ID= user ID
+      const quizInfo = {
+        creatorID : user?.email,  //creator's ID= user ID
         courseCode: module,
         createdAt : serverTimestamp(), // created at == time stamp
         topicID: topicName,
         // Number of learing concepts
          numberOfLearningObjectives:numOfLOs,
          listOFLearningObjectives:LOList
-      })
+      }
+
+      //- if valid create quiz
+      transaction.set(topicsDocRef,quizInfo)
 
       // create quiz snipet for the user=lecture
       transaction.set(
-        doc(firestore,`lecturers/${user?.uid}/quizSnippets`, topicName),{
-        topicId : topicName,
-        isModerator: true,
-      })
+        doc(firestore,`lecturers/${user?.uid}/quizSnippets`, topicName),quizInfo)
       router.push(`topics/${topicName}`)
     })
     
