@@ -272,15 +272,6 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
      </Link>
       }
 
-
-      {/* {!(questionCounter === 16) ? "" : 
-          <>
-            <Button bg= "#265e9e" color="white" margin="2px" onClick={returnToDasboard} isLoading={loading}>
-              Done
-            </Button>
-          </>
-      }  */}
-
     </Flex>
    
 </>
