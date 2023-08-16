@@ -271,11 +271,11 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
            Next
         </Button>
      :
-     <Link href={'/dashboard'}>
+     <a href={'/dashboard'}>
         <Button bg= "#265e9e" color="white" margin="2px"  onClick={nextQuestion} isLoading={loading}>
           BACK
         </Button>
-     </Link>
+     </a>
       }
 
     </Flex>
