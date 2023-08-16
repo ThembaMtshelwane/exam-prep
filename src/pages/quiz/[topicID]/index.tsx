@@ -17,7 +17,16 @@ const QuizPage:React.FC<QuizPageProps> = ({topicQuestionData, name}) => {
         <PageContent>
         <Box m={2} p={5}>
             <Heading m={2} p={5}>The Preview of {name} Quiz</Heading>
-            
+            <h3>Quiz name: {name}</h3>
+            <h3>Number of Learning objectives: {}</h3>
+            <h3>Course Code: {}</h3>
+            <h3>Number of questions: {topicQuestionData.length}</h3>
+            <h3>Created at: {}</h3>
+            <h3>Active till: {}</h3>
+            <h3>Students completed: {}</h3>
+            <h3>Total tries: {}</h3>
+            <br />
+
             <Link href='/dashboard'>
             <Button color='black' border='2px solid #265e9e' width='100%'
                 _active={{
