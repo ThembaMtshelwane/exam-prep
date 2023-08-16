@@ -25,7 +25,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   const [resourcelist, setResourceList] = useState<any[]>([])
 
   const [isUploadFile, setIsUploadFile] = useState(false)
-  const [fileUpload, setFileUpload] = useState(null)
+  const [fileUpload, setFileUpload] = useState<any>(null)
   const [fileLink, setFileLink] = useState('')
 
   const [loading, setLoading] = useState(false)
@@ -175,7 +175,13 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
     
      {!isUploadFile ?'' :
        <>
-         <input type="file"  onChange={(event)=>{setFileUpload(event.target.files[0])}}/>
+         <input type="file"  onChange={(event)=>{
+            if(event.target.files === null){
+              console.log('No file selected')
+            }else{
+              setFileUpload(event.target.files[0])
+            }
+            }}/>
          <Flex>
             <Button onClick={uploadFile}>Upload File</Button>
             <Button onClick={handleFileUploadClose}>Close</Button>
