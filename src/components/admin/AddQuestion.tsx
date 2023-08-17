@@ -13,12 +13,18 @@ type AddQuestionProps = {
 
 const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   const [user] = useAuthState(auth)
-  const [question, setQuestion] = useState('')
-  const [answer, setAnswer] = useState('')
+  const [question, setQuestion] = useState<string>('')
+  const [answer, setAnswer] = useState<string>('')
   const [qid, setQuestionID] = useState<string>('1');
   const [options, setOptions] = useState<any[]>([])
+
+  const [option1, setOption1] = useState<string>('')
+  const [option2, setOption2] = useState<string>('')
+  const [option3, setOption3] = useState<string>('')
+  const [option4, setOption4] = useState<string>('')
+
   const [levelNum, setLevel] = useState<number>(1);
-  const [numResources, setNumResources] = useState(0)
+  const [numResources, setNumResources] = useState<number>(0)
   const [count, setCount] =useState<number>(0);
   const [levelText, setLevelText] = useState<string>('');
   const [isAddingQuestions, setIsAddingQuestions] = useState<boolean>(true);
@@ -26,11 +32,11 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
 
   const [isUploadFile, setIsUploadFile] = useState(false)
   const [fileUpload, setFileUpload] = useState<any>(null)
-  const [fileLink, setFileLink] = useState('')
+  const [fileLink, setFileLink] = useState<string>('')
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
   
-  const [error, setError] = useState('')
+  const [error, setError] = useState<string>('')
 
   const levelOne = ['1']
   const levelTwo = ['1.1','1.2']
@@ -60,8 +66,20 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
     setAnswer(event.target.value)
   }
 
-  const handleOptions = (event:React.ChangeEvent<HTMLInputElement>) =>{
-    setOptions(prev =>[prev, event.target.value])
+  // const handleOptions = (event:React.ChangeEvent<HTMLInputElement>) =>{
+  //   setOptions(prev =>[prev, event.target.value])
+  // }
+  const handleOption1 = (event:React.ChangeEvent<HTMLInputElement>) =>{
+    setOption1(event.target.value)
+  }
+  const handleOption2 = (event:React.ChangeEvent<HTMLInputElement>) =>{
+    setOption2(event.target.value)
+  }
+  const handleOption3 = (event:React.ChangeEvent<HTMLInputElement>) =>{
+    setOption3(event.target.value)
+  }
+  const handleOption4 = (event:React.ChangeEvent<HTMLInputElement>) =>{
+    setOption4(event.target.value)
   }
 
   const handleFileUpload =() =>{
@@ -103,7 +121,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
       await setDoc(questionsDocRef,{
         questionID: qid,
         questionLevel: levelNum,
-        questionOptions:options,
+        questionOptions:[option1,option2,option3,option4],
         questionAnswer:answer,
         questionResources: resourcelist,
         fileURL: fileLink,
@@ -162,14 +180,12 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
      
      {isAddingQuestions && levelNum<=4 ? 
       <div>
-          <Text fontWeight={600} fontSize={15}>You are now adding question {qid} in level {levelNum} </Text>
-
-          <Text fontWeight={600} fontSize={15}>Question (Text is the default)</Text>
-     
-     <Text fontWeight={600} fontSize={15}>
-       <Input value={question} size='sm'placeholder='What is the colour of the sky?'  onChange={handleQuestionChange} 
-       mb={15} name='questionText'></Input>
-     </Text>
+        <Text fontWeight={600} fontSize={15}>You are now adding question {qid} in level {levelNum} </Text>
+        <Text fontWeight={600} fontSize={15}>Question (Text is the default)</Text>
+        <Text fontWeight={600} fontSize={15}>
+          <Input value={question} size='sm'placeholder='What is the colour of the sky?'  onChange={handleQuestionChange} 
+          mb={15} name='questionText'></Input>
+        </Text>
     
      <Button onClick={handleFileUpload}>Add File</Button>
     
@@ -198,22 +214,22 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
      <br />
      {/* //  Drop down to enter the 4 options  */}
      <Text fontWeight={600} fontSize={15}>Options</Text>
-     { Array(+4).fill("").map((n, i) => {
-         return (
-           <>
-         <div key={i*7} ></div>
-          <Text
-             fontWeight={600} fontSize={15}>
-             <Input mt={2} size='sm'placeholder={String(i+1)}
-             name={String(i+1)} onChange={handleOptions}>
 
-             </Input>
-           </Text>
-           
-           </>
-         )
-        })
-     }
+     <Input mt={2} size='sm'placeholder='Orange'
+               name='A' onChange={handleOption1}>
+     </Input>
+
+     <Input mt={2} size='sm'placeholder='Yellow'
+               name='B' onChange={handleOption2}>
+     </Input> 
+
+      <Input mt={2} size='sm'placeholder='Blue'
+               name='C' onChange={handleOption3}>
+      </Input>
+ 
+      <Input mt={2} size='sm'placeholder='Green'
+               name='D' onChange={handleOption4}>
+      </Input>
 
      <Text fontSize='9pt' color='red'>{error}</Text>
 
