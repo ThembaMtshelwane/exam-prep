@@ -28,13 +28,20 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   const [count, setCount] =useState<number>(0);
   const [levelText, setLevelText] = useState<string>('');
   const [isAddingQuestions, setIsAddingQuestions] = useState<boolean>(true);
+  
   const [resourcelist, setResourceList] = useState<any[]>([])
+
+  const [resource1, setResource1] = useState<string>('');
+  const [resource2, setResource2] = useState<string>('');
+  const [resource3, setResource3] = useState<string>('');
+  const [resource4, setResource4] = useState<string>('');
 
   const [isUploadFile, setIsUploadFile] = useState(false)
   const [fileUpload, setFileUpload] = useState<any>(null)
   const [fileLink, setFileLink] = useState<string>('')
 
   const [loading, setLoading] = useState<boolean>(false)
+  const [goToNext, setGoToNext] = useState<boolean>(false)
   
   const [error, setError] = useState<string>('')
 
@@ -43,7 +50,6 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   const levelThree = ['1.1.1','1.1.2','1.2.1','1.2.2']
   const levelFour = ['1.1.1.1', '1.1.1.2', '1.1.2.1', '1.1.2.2', '1.2.1.1', '1.2.1.2', '1.2.2.1', '1.2.2.2']
   const quizLevelCount : string[][]= [levelOne,levelTwo,levelThree,levelFour]
-  let counting =1
 
   const handleQuestionChange =(event:React.ChangeEvent<HTMLInputElement>) =>{
     setQuestion(event.target.value)
@@ -58,8 +64,17 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
     }
   }
 
-  const handleResourceChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
-    setResourceList(prev =>[prev, event.target.value])
+  const handleResourceChange1 = (event:React.ChangeEvent<HTMLInputElement>) =>{
+    setResource1( event.target.value)
+  }
+  const handleResourceChange2 = (event:React.ChangeEvent<HTMLInputElement>) =>{
+    setResource2( event.target.value)
+  }
+  const handleResourceChange3 = (event:React.ChangeEvent<HTMLInputElement>) =>{
+    setResource3( event.target.value)
+  }
+  const handleResourceChange4 = (event:React.ChangeEvent<HTMLInputElement>) =>{
+    setResource4( event.target.value)
   }
 
   const handleAnswerChange= (event:React.ChangeEvent<HTMLInputElement>) =>{
@@ -123,7 +138,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
         questionLevel: levelNum,
         questionOptions:[option1,option2,option3,option4],
         questionAnswer:answer,
-        questionResources: resourcelist,
+        questionResources: [resource1,resource2,resource3,resource4],
         fileURL: fileLink,
         question,
       })
@@ -135,6 +150,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
       setError(error.message)
     }
       setLoading(false)
+      setGoToNext(true)
 
 
       if (count+1 === quizLevelCount[levelNum-1].length) {
@@ -156,6 +172,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
     }
     setQuestionID(quizLevelCount[levelNum-1][count])
     setIsAddingQuestions(true)
+    setGoToNext(false)
   }
 
   return (
@@ -238,10 +255,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
      {!(levelNum === 4) ? "" : 
          <>
          <Text fontWeight={600} fontSize={15}>Number of Resources</Text>
-         <Text
-            fontWeight={600} fontSize={15}>
-           <Input value={numResources} size='sm' onChange={handleNumResourceChange}></Input>
-         </Text>
+         <Input value={numResources} size='sm' onChange={handleNumResourceChange}></Input>
          </>
      }  
 
@@ -251,19 +265,36 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
            .fill("")
            .map((n, i) => {
              return (
-               <>
-               <div key={i*8} ></div>
-              <Text
-              fontWeight={600} fontSize={15}>
-               Resource
-              </Text>
-              <Text
-              fontWeight={600} fontSize={15}>
-              <Input mt={2} size='sm' placeholder={`Link ${String(i+1)}`} 
-              onChange={handleResourceChange} name={String(i+1)}></Input>
-              </Text>
-               </>
-
+              <>
+                {i===0?
+                   <>
+                    <Text fontWeight={600} fontSize={15}>  Resource </Text>                
+                    <Input mt={2} size='sm' placeholder={`Link ${String(i+1)}`} 
+                    onChange={handleResourceChange1} name={String(i+1)}></Input>
+                    </>
+                :""}
+                {i===1?
+                   <>
+                    <Text fontWeight={600} fontSize={15}>  Resource </Text>                
+                    <Input mt={2} size='sm' placeholder={`Link ${String(i+1)}`} 
+                    onChange={handleResourceChange2} name={String(i+1)}></Input>
+                    </>
+                :""}
+                  {i===2?
+                   <>
+                    <Text fontWeight={600} fontSize={15}>  Resource </Text>                
+                    <Input mt={2} size='sm' placeholder={`Link ${String(i+1)}`} 
+                    onChange={handleResourceChange3} name={String(i+1)}></Input>
+                    </>
+                :""}
+                  {i===3?
+                   <>
+                    <Text fontWeight={600} fontSize={15}>  Resource </Text>                
+                    <Input mt={2} size='sm' placeholder={`Link ${String(i+1)}`} 
+                    onChange={handleResourceChange4} name={String(i+1)}></Input>
+                    </>
+                :""}                
+              </>
              )
            })
        }
@@ -283,12 +314,14 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
       
      
      {levelNum<=4 ?
+        goToNext?
         <Button bg= "#265e9e" color="white" margin="2px"  onClick={nextQuestion} isLoading={loading}>
-           Next
+          Next
         </Button>
+        :''
      :
      <a href={'/dashboard'}>
-        <Button bg= "#265e9e" color="white" margin="2px"  onClick={nextQuestion} isLoading={loading}>
+        <Button bg= "#265e9e" color="white" margin="2px" isLoading={loading}>
           BACK
         </Button>
      </a>
