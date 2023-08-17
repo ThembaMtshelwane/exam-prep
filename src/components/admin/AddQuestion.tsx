@@ -53,7 +53,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   }
 
   const handleResourceChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
-    setResourceList(prev =>[...prev, event.target.value])
+    setResourceList(prev =>[prev, event.target.value])
   }
 
   const handleAnswerChange= (event:React.ChangeEvent<HTMLInputElement>) =>{
@@ -61,7 +61,7 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
   }
 
   const handleOptions = (event:React.ChangeEvent<HTMLInputElement>) =>{
-    setOptions(prev =>[...prev, event.target.value])
+    setOptions(prev =>[prev, event.target.value])
   }
 
   const handleFileUpload =() =>{
