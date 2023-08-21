@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from 'next';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { getQuestion } from '../../api/QuestionData';
 import { Box, ListItem, Stack, List,Text, Heading, Button, Link ,Image} from '@chakra-ui/react';
 import PageContent from '@/src/components/layout/PageContent';
@@ -7,10 +7,18 @@ import PageContent from '@/src/components/layout/PageContent';
 type QuizPageProps = {
     // All topic data=> questions, options...
     topicQuestionData:any[],
-    name :String
+    name :string
 };
 
 const QuizPage:React.FC<QuizPageProps> = ({topicQuestionData, name}) => {
+    const [studentInfo, setStudentInfo] = useState<string>('')
+
+    useEffect(() => {
+        const handleName =()=>{
+            setStudentInfo(`/info/${name}`)
+        }
+        handleName()
+      });
     
     return (
         <>
@@ -40,6 +48,21 @@ const QuizPage:React.FC<QuizPageProps> = ({topicQuestionData, name}) => {
                       color:'white' 
                     }}>
                     Back
+                 </Button>
+            </Link>
+            <br /> <br />
+            
+            <Link href={studentInfo}>
+                <Button color='black' border='2px solid #265e9e' width='100%'
+                    _active={{
+                      transform: 'scale(0.98)',
+                    }}
+                    _focus={{
+                      boxShadow:'0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
+                      bg:' #618fd9',
+                      color:'white' 
+                    }}>
+                    Student Information
                  </Button>
             </Link>
 
