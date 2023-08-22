@@ -32,7 +32,7 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
         })
       }
       percentage()
-      },[]);
+      });
       
       console.log('quizHistory', quizHistory)
 
@@ -88,8 +88,8 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
                  
                   <Tbody>
                     {studentResults.length!=0?
-                       studentResults.map((studentData)=>(
-                          <Tr>
+                       studentResults.map((studentData,index)=>(
+                          <Tr key={index}>
                            <Td>{studentData.email}</Td>
                            <Td>{studentData.outcome}</Td>
                         </Tr>

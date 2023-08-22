@@ -74,7 +74,7 @@ const QuizPage:React.FC<QuizPageProps> = ({topicQuestionData, name}) => {
                                  m ={2} p={5}
                                 > 
                                 <Text >Question ID: {prevID.questionID}</Text>
-                                <Image src={prevID.fileURL}/>
+                                <Image src={prevID.fileURL} alt=''/>
                                 <Text >Question: {prevID.question}</Text>
                                 <Text >Answer: {prevID.questionAnswer}</Text>  
                                 <Text >Options:</Text>  
