@@ -20,7 +20,7 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
     const tableRef = useRef(null);
 
     useEffect(() => {
-      setFilename(`${name} quiz student info`)
+      setFilename(`${name} quiz - student info`)
     },[]);
     const showResults = () => {      
         quizHistory.forEach((history:any,index:number)=>{
@@ -42,7 +42,7 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
             <Heading m={2} p={5}>Student Information for {name} Quiz</Heading>
 
             <Link href='/dashboard'>
-                <Button color='black' border='2px solid #265e9e' width='100%'  m={2}
+                <Button color='black' border='2px solid #265e9e' width='100%'  
                     _active={{
                       transform: 'scale(0.98)',
                     }}
@@ -55,7 +55,7 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
                  </Button>
             </Link>
             {show?
-              <div> 
+              <Box m={2}> 
 
               <DownloadTableExcel
                   filename={filename}
@@ -112,7 +112,7 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
                 </Button>
               </Link>
 
-              </div>
+              </Box>
               :
                 <Button color='black' border='2px solid #265e9e' width='100%' m={2}
                   _active={{
