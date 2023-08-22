@@ -34,7 +34,7 @@ type HistoryEntry = {
   results: { result: string }[];
 };
 
-const QuizPage: React.FC<QuizPageProps> = ({ userData, name, quizHistory }) => {
+const QuizPage: React.FC<QuizPageProps> = ({name, quizHistory }) => {
   const [studentResults, setStudentResults] = useState<StudentResult[]>([]);
   const [filename, setFilename] = useState<string>(`${name} quiz - student info`);
   const [show, setShow] = useState<boolean>(false);
