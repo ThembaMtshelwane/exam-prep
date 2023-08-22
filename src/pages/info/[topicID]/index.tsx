@@ -21,7 +21,18 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
 
     useEffect(() => {
       setFilename(`${name} quiz - student info`)
+      quizHistory.forEach((history:any,index:number)=>{
+        let count =0
+        history.results.forEach((outcome:any) => {
+          if(outcome.result === 'correct') {
+            count++
+          }
+        })
+        setStudentResults(prev =>[...prev,{email:history.studentID,outcome:(100*count/(history.results.length -1 )).toFixed(2)} ])
+      })     
+      SetShow(true)
     },[]);
+    
     const showResults = () => {      
         quizHistory.forEach((history:any,index:number)=>{
           let count =0
@@ -54,12 +65,12 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
                     Back
                  </Button>
             </Link>
-            {show?
+            {/* {show? */}
               <Box m={2}> 
 
               <DownloadTableExcel
                   filename={filename}
-                  sheet="users"
+                  sheet="students"
                   currentTableRef={tableRef.current}
               >         
                 <Button color='black' border='2px solid #265e9e' width='100%'
@@ -76,7 +87,7 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
               </DownloadTableExcel>
                 
               <TableContainer>
-                <Table variant='simple' ref={tableRef}>
+                <Table variant='simple' ref={tableRef} >
                   <Thead>
                     <Tr>
                       <Th>Student Email</Th>
@@ -113,8 +124,8 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
               </Link>
 
               </Box>
-              :
-                <Button color='black' border='2px solid #265e9e' width='100%' m={2}
+              {/* : */}
+                {/* <Button color='black' border='2px solid #265e9e' width='100%' m={2}
                   _active={{
                     transform: 'scale(0.98)',
                   }}
@@ -126,8 +137,8 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
                   onClick={showResults}
                 >
                   Show Table of Results
-                </Button>
-            }
+                </Button> */}
+            {/* } */}
 
         </Box>
         </PageContent>
