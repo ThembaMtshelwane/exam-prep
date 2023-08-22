@@ -1,6 +1,6 @@
 import { topicState } from '@/src/atoms/topicsAtom';
 import { auth } from '@/src/firebase/clientApp';
-import { Button } from '@chakra-ui/react';
+import { Button,Link } from '@chakra-ui/react';
 import { signOut } from 'firebase/auth';
 import React from 'react';
 import { useResetRecoilState } from 'recoil';
@@ -17,8 +17,14 @@ const LogOut:React.FC<LogOutProps> = () => {
     const logout = async() =>{
         await signOut(auth)
         resetTopicState()
-        router.push('/')
     }
-    return <Button bg="#265e9e" color="white" mb={2} mt={2} onClick={logout}>Logout</Button>
+    return (
+        <Link href='/'> 
+                <Button bg=" #11355e" color="white" mb={2} mt={2} onClick={logout}>
+                   Logout
+                </Button>
+        </Link>
+    )
+   
 }
 export default LogOut;

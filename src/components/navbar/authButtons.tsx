@@ -10,14 +10,14 @@ const AuthButtons:React.FC = () => {
         <>
             <AuthModal/>
             <Button 
-                bg= "#265e9e"
+                bg=" #11355e"
                 color="white"
                 margin="2px"
                 onClick={()=> setAuthModalState({open:true, view:"login"})}
             >Login</Button>
 
             <Button
-                bg= "#265e9e"
+                bg= " #11355e"
                 color="white" 
                 margin="2px"
                 onClick={()=> setAuthModalState({open:true, view:"register"})}

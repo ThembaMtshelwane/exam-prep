@@ -18,10 +18,10 @@ const PageContent:React.FC<Props> = ({children}) => {
             width='95%'
             justify='center'
             maxWidth='860px'
-            border='1px solid #265e9e' 
+            border='1px solid #11355e' 
             direction='column'  
             bg='white'
-            borderRadius='20px'     
+            borderRadius='5px'     
             >
                 {children && children}
             </Flex> 
