@@ -29,7 +29,6 @@ const Login:React.FC<LoginProps> = () => {
         event.preventDefault()
 
        signInWithEmailAndPassword(loginForm.email,loginForm.password)
-       router.push('/dashboard')
     }
 
     // When user types the an input, update the state
