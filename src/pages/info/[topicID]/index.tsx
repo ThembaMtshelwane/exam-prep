@@ -1,9 +1,10 @@
 import { GetServerSidePropsContext } from 'next';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getAllUsers } from '../../api/UserData';
-import { Box, Heading, Button, Link ,Image} from '@chakra-ui/react';
+import { Box, Heading, Button, Link, Tr} from '@chakra-ui/react';
 import PageContent from '@/src/components/layout/PageContent';
-import { Table,Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer,} from '@chakra-ui/react'
+import { Table,Thead, Tbody, Th, Td, TableContainer,} from '@chakra-ui/react'
+import { DownloadTableExcel } from 'react-export-table-to-excel';
 
 type QuizPageProps = {
     // All topic data=> questions, options...
@@ -13,19 +14,26 @@ type QuizPageProps = {
 };
 
 const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
-    const [userIDs, setUserID] =useState<string[]>([])
+    const [studentResults, setStudentResults] =useState<any[]>([{}])
+    const [filename, setFilename] =useState<string>('s')
+    const tableRef = useRef(null);
 
     useEffect(() => {
-        const getAllIds= ()=>{
-            userData.map((user)=>{
-              setUserID(prev =>[...prev,user.uid])
-            })
-          }
-        getAllIds()
+      const percentage= ()=>{
+        let count =0
+        setFilename(`${name} quiz student info`)
+        quizHistory.forEach((history:any)=>{
+          history.results.forEach((outcome:any) => {
+            if(outcome.result === 'correct') {
+              count++
+            }
+          })
+          setStudentResults(prev =>[prev,{email:history.studentID,outcome:100*count/(history.results.length -1 )} ])
+        })
+      }
+      percentage()
       },[]);
-
-
-
+      
       console.log('quizHistory', quizHistory)
 
     
@@ -49,41 +57,41 @@ const QuizPage:React.FC<QuizPageProps> = ({userData, name,quizHistory}) => {
                  </Button>
             </Link>
             <br /> <br />
-            
-            <Button color='black' border='2px solid #265e9e' width='100%'
-                _active={{
-                  transform: 'scale(0.98)',
-                }}
-                _focus={{
-                  boxShadow:'0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
-                  bg:' #618fd9',
-                  color:'white' 
-                }}>
-                Extract
-            </Button>
+            <DownloadTableExcel
+                    filename={filename}
+                    sheet="users"
+                    currentTableRef={tableRef.current}
+                >         
+                <Button color='black' border='2px solid #265e9e' width='100%'
+                    _active={{
+                      transform: 'scale(0.98)',
+                    }}
+                    _focus={{
+                      boxShadow:'0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
+                      bg:' #618fd9',
+                      color:'white' 
+                    }}>
+                    Download Data
+                </Button>
+             </DownloadTableExcel>
             
             <br /><br />
 
             <TableContainer>
-                <Table variant='simple'>
-                  <TableCaption>Imperial to metric conversion factors</TableCaption>
-                  
+                <Table variant='simple' ref={tableRef}>
                   <Thead>
                     <Tr>
                       <Th>Student Email</Th>
-                      <Th>Attempts</Th>
                       <Th>Results</Th>
                     </Tr>
                   </Thead>
                  
                   <Tbody>
-                    {userData.length!=0?
-                       userData.map((user)=>(
-                          // Attempts
+                    {studentResults.length!=0?
+                       studentResults.map((studentData)=>(
                           <Tr>
-                           <Td>{user.email}</Td>
-                           <Td>{quizHistory[0].results[1].question}</Td>
-                           <Td isNumeric>25.4</Td>
+                           <Td>{studentData.email}</Td>
+                           <Td>{studentData.outcome}</Td>
                         </Tr>
                        ))
                     :''}
