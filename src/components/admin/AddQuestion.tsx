@@ -1,35 +1,18 @@
-import {
-  Button,
-  Flex,
-  Heading,
-  Input,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Text,
-  VisuallyHidden,
-  Image,
-  Box,
-} from '@chakra-ui/react'
-import React, { useState } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth, firestore, storage } from '@/src/firebase/clientApp'
+import { Button, Flex, Heading, Input, Text, Image } from '@chakra-ui/react'
+import React, { useEffect, useState } from 'react'
+import { firestore, storage } from '@/src/firebase/clientApp'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
-import { Link } from 'react-router-dom'
 
 type AddQuestionProps = {
   topicID: string
+  numOfLOs: number
 }
 
-const AddQuestion: React.FC<AddQuestionProps> = ({ topicID }) => {
-  const [user] = useAuthState(auth)
+const AddQuestion: React.FC<AddQuestionProps> = ({ topicID, numOfLOs }) => {
   const [question, setQuestion] = useState<string>('')
   const [answer, setAnswer] = useState<string>('')
   const [qid, setQuestionID] = useState<string>('1')
-  const [options, setOptions] = useState<any[]>([])
 
   const [option1, setOption1] = useState<string>('')
   const [option2, setOption2] = useState<string>('')
@@ -58,6 +41,8 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID }) => {
 
   const [error, setError] = useState<string>('')
 
+  const FOUR_LOS = 4
+  const EIGHT_LOS = 8
   const levelOne = ['1']
   const levelTwo = ['1.1', '1.2']
   const levelThree = ['1.1.1', '1.1.2', '1.2.1', '1.2.2']
@@ -71,7 +56,20 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID }) => {
     '1.2.2.1',
     '1.2.2.2',
   ]
-  const quizLevelCount: string[][] = [levelOne, levelTwo, levelThree, levelFour]
+  const [quizLevelCount, setQuizLevelCount] = useState<string[][]>([])
+  const [MAX_LEVEL, SetMaxLevel] = useState<number>(0)
+
+  useEffect(() => {
+    if (numOfLOs === FOUR_LOS) {
+      setQuizLevelCount([levelOne, levelTwo, levelThree])
+      SetMaxLevel(3)
+    } else if (numOfLOs === EIGHT_LOS) {
+      setQuizLevelCount([levelOne, levelTwo, levelThree, levelFour])
+      SetMaxLevel(4)
+    }
+  }, [])
+
+  console.log('MAX_LEVEL', MAX_LEVEL)
 
   const handleQuestionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuestion(event.target.value)
@@ -147,7 +145,10 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID }) => {
     })
   }
 
-  const handleCreateQuestion = async () => {
+  const handleCreateQuestion = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault()
     setLoading(true)
     try {
       setError('')
@@ -190,7 +191,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID }) => {
   }
 
   const nextQuestion = () => {
-    if (levelNum > 4) {
+    if (levelNum > MAX_LEVEL) {
       setLevelText('QUIZ COMPLETE AT LEVEL ')
       return
     }
@@ -220,7 +221,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID }) => {
           alt="Id Labelling"
         />
 
-        {isAddingQuestions && levelNum <= 4 ? (
+        {isAddingQuestions && levelNum <= MAX_LEVEL ? (
           <div>
             <Text fontWeight={600} fontSize={15}>
               You are now adding question {qid} in level {levelNum}{' '}
@@ -312,9 +313,9 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID }) => {
               <Text fontSize="9pt" color="red">
                 {error}
               </Text>
-              {/* // if level is 4  show
+              {/* // if level is 4 or 3  show
      // Enter number of resources  */}
-              {!(levelNum === 4) ? (
+              {!(levelNum === MAX_LEVEL) ? (
                 ''
               ) : (
                 <>
@@ -330,7 +331,8 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID }) => {
                 </>
               )}
               {/* // Enter said resource */}
-              {!(levelNum === 4) && !(numResources >= 1 && numResources <= 4)
+              {!(levelNum === MAX_LEVEL) &&
+              !(numResources >= 1 && numResources <= MAX_LEVEL)
                 ? ''
                 : Array(+Number(numResources))
                     .fill('')
@@ -421,7 +423,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID }) => {
               </Button>
             </form>
           </div>
-        ) : levelNum <= 4 ? (
+        ) : levelNum <= MAX_LEVEL ? (
           <Text fontWeight={600} fontSize={15}>
             {' '}
             The next level is {levelNum}{' '}
@@ -433,7 +435,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID }) => {
           </Text>
         )}
 
-        {levelNum <= 4 ? (
+        {levelNum <= MAX_LEVEL ? (
           goToNext ? (
             <Button
               bg="#265e9e"
