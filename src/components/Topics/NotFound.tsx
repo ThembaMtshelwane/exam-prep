@@ -11,7 +11,7 @@ const NotFound:React.FC = () => {
             minHeight='60vh'
         >
             Sorry, that topic does not exist or has been delated
-            <Link href='/'>
+            <Link href='/dashboard'>
                 <Button mt={40}>
                     GO HOME
                 </Button>

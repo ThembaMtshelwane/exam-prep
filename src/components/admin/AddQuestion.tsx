@@ -81,9 +81,6 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
     setAnswer(event.target.value)
   }
 
-  // const handleOptions = (event:React.ChangeEvent<HTMLInputElement>) =>{
-  //   setOptions(prev =>[prev, event.target.value])
-  // }
   const handleOption1 = (event:React.ChangeEvent<HTMLInputElement>) =>{
     setOption1(event.target.value)
   }
@@ -142,8 +139,6 @@ const AddQuestion:React.FC<AddQuestionProps> = ({topicID}) => {
         fileURL: fileLink,
         question,
       })
-      // questionCounter = questionCounter +1
-      // console.log('question counter ', questionCounter)
       
     } catch (error:any) {
       console.log('handleCreateQuiz error ',error)
