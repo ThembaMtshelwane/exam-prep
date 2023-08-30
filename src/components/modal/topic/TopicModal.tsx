@@ -174,7 +174,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                 </Text>
                 <Input
                   value={topicName}
-                  placeholder="GeneralKnowledge"
+                  placeholder="GeneralKnowledge85"
                   size="sm"
                   mb={5}
                   onChange={handleChange1}
