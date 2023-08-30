@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Flex,
   Input,
   Modal,
   ModalBody,
@@ -57,8 +58,11 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
     setError('')
     setNumOfLOs(Number(event.target.value))
 
-    if (Number(event.target.value) < 4 || Number(event.target.value) > 8) {
-      setError('Maximun is 8 and minimum is 4')
+    if (
+      Number(event.target.value) != MIN_LEARNING_OBJECTIVES &&
+      Number(event.target.value) != MAX_LEARNING_OBJECTIVES
+    ) {
+      setError('Learning Objectives must be 4 or 8')
       return
     }
   }
@@ -152,9 +156,6 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
               justifyContent="center"
               pb={6}
             >
-              <Text fontWeight={600} fontSize={12} mb={5}>
-                All quizes must contain 16 questions
-              </Text>
               <form onSubmit={handleCreateQuiz}>
                 <Text fontWeight={600} fontSize={15}>
                   Course code
@@ -185,7 +186,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                 </Text>
 
                 <Text fontWeight={600} fontSize={15}>
-                  Number of Learning Objectives (Between 4 and 8)
+                  Number of Learning Objectives (4 or 8)
                 </Text>
                 <Input
                   value={numOfLOs}
@@ -195,42 +196,40 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                   required
                 ></Input>
 
-                {numOfLOs < MIN_LEARNING_OBJECTIVES ||
-                numOfLOs > MAX_LEARNING_OBJECTIVES
-                  ? error
-                  : ''}
-
                 <Text fontWeight={600} fontSize={15} mt={5}>
                   Enter Learning Obejectives
                 </Text>
-                {numOfLOs < MIN_LEARNING_OBJECTIVES ||
-                numOfLOs > MAX_LEARNING_OBJECTIVES
-                  ? 'Invalid Learing Objectives'
-                  : Array(+Number(numOfLOs))
-                      .fill('')
-                      .map((n, i) => {
-                        return (
-                          <div key={i * 7}>
-                            <Input
-                              mt={2}
-                              size="sm"
-                              placeholder={String(i + 1)}
-                              name={String(i + 1)}
-                              onChange={handleLOList}
-                              required
-                            ></Input>
-                          </div>
-                        )
-                      })}
-                <Button
-                  bg="#265e9e"
-                  color="white"
-                  margin="2px"
-                  type="submit"
-                  isLoading={loading}
-                >
-                  Continue
-                </Button>
+                <Flex flexDirection="column">
+                  {numOfLOs != MIN_LEARNING_OBJECTIVES &&
+                  numOfLOs != MAX_LEARNING_OBJECTIVES
+                    ? 'Invalid Learing Objectives'
+                    : Array(+Number(numOfLOs))
+                        .fill('')
+                        .map((n, i) => {
+                          return (
+                            <div key={i * 7}>
+                              <Input
+                                mt={2}
+                                size="sm"
+                                placeholder={String(i + 1)}
+                                name={String(i + 1)}
+                                onChange={handleLOList}
+                                required
+                              ></Input>
+                            </div>
+                          )
+                        })}
+                  <Button
+                    bg="#265e9e"
+                    color="white"
+                    margin="2px"
+                    type="submit"
+                    width="50%"
+                    isLoading={loading}
+                  >
+                    Continue
+                  </Button>
+                </Flex>
               </form>
             </ModalBody>
           </Box>
