@@ -13,6 +13,7 @@ import {
   Image,
 } from '@chakra-ui/react'
 import PageContent from '@/src/components/layout/PageContent'
+import EditModal from '@/src/components/modal/preview/EditModal'
 
 type QuizPageProps = {
   // All topic data=> questions, options...
@@ -213,24 +214,42 @@ const PreviewCard: React.FC<previewProps> = (questionPreview) => {
       <DisplayOptions options={questionOptions} />
       <DisplayResources resources={questionResources} />
       <br />
-      <EditCard />
+      <EditButton questionID={questionID} resourceList={questionResources} />
     </Box>
   )
 }
 
-type editProps = {}
+type editProps = {
+  questionID: any
+  resourceList: string[]
+}
 
-const EditCard: React.FC<editProps> = () => {
+const EditButton: React.FC<editProps> = (questionID, resourceList) => {
+  const [open, setOpen] = useState(false)
+
   return (
     <>
-      <Button>Edit</Button>
+      <EditModal
+        qid={questionID.questionID}
+        open={open}
+        handleClose={() => setOpen(false)}
+      />
+      <Button
+        fontSize={20}
+        mr={2}
+        cursor="pointer"
+        onClick={() => setOpen(true)}
+        alignSelf="center"
+      >
+        Edit
+      </Button>
     </>
   )
 }
 
 type saveProps = {}
 
-const SaveCard: React.FC<saveProps> = () => {
+const SaveButton: React.FC<saveProps> = () => {
   return (
     <>
       <Button>Save</Button>
