@@ -49,124 +49,25 @@ const QuizPage: React.FC<QuizPageProps> = ({ topicQuestionData, name }) => {
             <h3>Students completed: {}</h3>
             <h3>Total tries: {}</h3>
             <br />
-            <Link href="/dashboard">
-              <Button
-                color="black"
-                border="2px solid #265e9e"
-                width="100%"
-                _active={{
-                  transform: 'scale(0.98)',
-                }}
-                _focus={{
-                  boxShadow:
-                    '0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
-                  bg: ' #618fd9',
-                  color: 'white',
-                }}
-              >
-                Back
-              </Button>
-            </Link>
-            <br /> <br />
-            <Link href={studentInfo}>
-              <Button
-                color="black"
-                border="2px solid #265e9e"
-                width="100%"
-                _active={{
-                  transform: 'scale(0.98)',
-                }}
-                _focus={{
-                  boxShadow:
-                    '0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
-                  bg: ' #618fd9',
-                  color: 'white',
-                }}
-              >
-                Student Information
-              </Button>
-            </Link>
+            <StudentInformationButton studentInfo={studentInfo} />
+            <br />
+            <br />
+            <BackToDashboard />
+            <br />
             <List width="100%">
               <Stack spacing={5}>
-                {topicQuestionData.map((prevID: any, index: number) => (
-                  <ListItem
-                    key={index}
-                    boxShadow="1px 1px 3px 2px rgba(97, 143, 217, .25)"
-                    m={2}
-                    p={5}
-                  >
-                    <Text>Question ID: {prevID.questionID}</Text>
-                    <Image src={prevID.fileURL} alt="" />
-                    <Text>Question: {prevID.question}</Text>
-                    <Text>Answer: {prevID.questionAnswer}</Text>
-                    <Text>Options:</Text>
-                    {
-                      <List width="100%" spacing={2}>
-                        {prevID.questionOptions.map(
-                          (option: any, index: number) => (
-                            <ListItem
-                              key={index}
-                              border="2px solid #265e9e"
-                              width="50%"
-                            >
-                              <Text align="center">{option}</Text>
-                            </ListItem>
-                          )
-                        )}
-                      </List>
-                    }
-
-                    {prevID.questionResources.length != 0 ? (
-                      <>
-                        <Text>Resources:</Text>
-                        <List width="100%" spacing={2}>
-                          {prevID.questionResources.map(
-                            (option: any, index: number) => (
-                              <ListItem
-                                key={index}
-                                border="2px solid #265e9e"
-                                width="50%"
-                              >
-                                <Text align="center">{option}</Text>
-                              </ListItem>
-                            )
-                          )}
-                        </List>
-                      </>
-                    ) : (
-                      ''
-                    )}
+                {topicQuestionData.map((data: any, index: number) => (
+                  <ListItem key={index}>
+                    <PreviewCard data={data} />
                   </ListItem>
                 ))}
               </Stack>
             </List>
           </Box>
         ) : (
-          <Box m={2} p={5}>
-            <Heading m={2} p={5}>
-              The Preview of {name} Quiz
-            </Heading>
-            <Text>No Questions to Preview</Text>
-          </Box>
+          <NoData name={name} />
         )}
-        <Link href="/dashboard">
-          <Button
-            color="black"
-            border="2px solid #265e9e"
-            width="100%"
-            _active={{
-              transform: 'scale(0.98)',
-            }}
-            _focus={{
-              boxShadow:
-                '0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
-              bg: ' #618fd9',
-              color: 'white',
-            }}
-          >
-            Back
-          </Button>
-        </Link>
+        <BackToDashboard />
       </PageContent>
     </>
   )
@@ -177,3 +78,162 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export default QuizPage
+
+type optionsProps = {
+  options: any
+}
+
+const DisplayOptions: React.FC<optionsProps> = ({ options }) => {
+  return (
+    <List width="100%" spacing={2}>
+      {options.map((option: any, index: number) => (
+        <ListItem key={index} border="2px solid #265e9e" width="50%">
+          <Text align="center">{option}</Text>
+        </ListItem>
+      ))}
+    </List>
+  )
+}
+
+type resourcesProps = {
+  resources: any
+}
+
+const DisplayResources: React.FC<resourcesProps> = ({ resources }) => {
+  return (
+    <>
+      {resources.length != 0 ? (
+        <>
+          <Text>Resources:</Text>
+          <List width="100%" spacing={2}>
+            {resources.map((option: any, index: number) => (
+              <ListItem key={index} border="2px solid #265e9e" width="50%">
+                <Text align="center">{option}</Text>
+              </ListItem>
+            ))}
+          </List>
+        </>
+      ) : (
+        ''
+      )}
+    </>
+  )
+}
+
+type noDataProps = {
+  name: string
+}
+
+const NoData: React.FC<noDataProps> = ({ name }) => {
+  return (
+    <Box m={2} p={5}>
+      <Heading m={2} p={5}>
+        The Preview of {name} Quiz
+      </Heading>
+      <Text>No Questions to Preview</Text>
+    </Box>
+  )
+}
+
+type indexProps = {}
+
+const BackToDashboard: React.FC<indexProps> = () => {
+  return (
+    <div>
+      {' '}
+      <Link href="/dashboard">
+        <Button
+          color="black"
+          border="2px solid #265e9e"
+          width="100%"
+          _active={{
+            transform: 'scale(0.98)',
+          }}
+          _focus={{
+            boxShadow:
+              '0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
+            bg: ' #618fd9',
+            color: 'white',
+          }}
+        >
+          Back
+        </Button>
+      </Link>
+    </div>
+  )
+}
+
+type studentInfo = {
+  studentInfo: any
+}
+
+const StudentInformationButton: React.FC<studentInfo> = ({ studentInfo }) => {
+  return (
+    <Link href={studentInfo}>
+      <Button
+        color="black"
+        border="2px solid #265e9e"
+        width="100%"
+        _active={{
+          transform: 'scale(0.98)',
+        }}
+        _focus={{
+          boxShadow:
+            '0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
+          bg: ' #618fd9',
+          color: 'white',
+        }}
+      >
+        Student Information
+      </Button>
+    </Link>
+  )
+}
+
+type previewProps = {
+  data: any
+}
+
+const PreviewCard: React.FC<previewProps> = (questionPreview) => {
+  const {
+    questionID,
+    fileURL,
+    question,
+    questionAnswer,
+    questionOptions,
+    questionResources,
+  } = questionPreview.data
+  return (
+    <Box boxShadow="1px 1px 3px 2px rgba(97, 143, 217, .25)" m={2} p={5}>
+      <Text>Question ID: {questionID}</Text>
+      <Image src={fileURL} alt="" />
+      <Text>Question: {question}</Text>
+      <Text>Answer: {questionAnswer}</Text>
+      <Text>Options:</Text>
+      <DisplayOptions options={questionOptions} />
+      <DisplayResources resources={questionResources} />
+      <br />
+      <EditCard />
+    </Box>
+  )
+}
+
+type editProps = {}
+
+const EditCard: React.FC<editProps> = () => {
+  return (
+    <>
+      <Button>Edit</Button>
+    </>
+  )
+}
+
+type saveProps = {}
+
+const SaveCard: React.FC<saveProps> = () => {
+  return (
+    <>
+      <Button>Save</Button>
+    </>
+  )
+}
