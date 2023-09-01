@@ -209,14 +209,14 @@ const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
   return (
     <Box boxShadow="1px 1px 3px 2px rgba(97, 143, 217, .25)" m={2} p={5}>
       <Text>Question ID: {questionID}</Text>
-      <Image src={fileURL} alt="" />
       <Text>Question: {question}</Text>
+      <Image src={fileURL} alt="" />
       <Text>Answer: {questionAnswer}</Text>
       <Text>Options:</Text>
       <DisplayOptions options={questionOptions} />
       <DisplayResources resources={questionResources} />
       <br />
-      <EditButton questionID={questionID} name={name} />
+      <EditButton questionID={questionID} name={name} fileURL={fileURL} />
     </Box>
   )
 }
@@ -224,15 +224,17 @@ const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
 type editProps = {
   questionID: string
   name: string
+  fileURL: any
 }
 
-const EditButton: React.FC<editProps> = ({ questionID, name }) => {
+const EditButton: React.FC<editProps> = ({ questionID, name, fileURL }) => {
   const [open, setOpen] = useState(false)
   return (
     <>
       <EditModal
         qid={questionID}
         name={name}
+        fileURL={fileURL}
         open={open}
         handleClose={() => setOpen(false)}
       />

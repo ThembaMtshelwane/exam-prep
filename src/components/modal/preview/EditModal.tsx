@@ -1,4 +1,4 @@
-import { firestore } from '@/src/firebase/clientApp'
+import { firestore, storage } from '@/src/firebase/clientApp'
 import {
   Modal,
   ModalOverlay,
@@ -11,8 +11,15 @@ import {
   Box,
   Text,
   ModalFooter,
+  Image,
 } from '@chakra-ui/react'
 import { doc, updateDoc } from 'firebase/firestore'
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from 'firebase/storage'
 import React, { useState } from 'react'
 
 type EditModalProps = {
@@ -20,11 +27,13 @@ type EditModalProps = {
   name: string
   open: boolean
   handleClose: () => void
+  fileURL: any
 }
 
 const EditModal: React.FC<EditModalProps> = ({
   qid,
   name,
+  fileURL,
   open,
   handleClose,
 }) => {
@@ -35,6 +44,10 @@ const EditModal: React.FC<EditModalProps> = ({
   const [option2, setOption2] = useState<string>('')
   const [option3, setOption3] = useState<string>('')
   const [option4, setOption4] = useState<string>('')
+  const [resource1, setResource1] = useState<string>('')
+  const [resource2, setResource2] = useState<string>('')
+  const [resource3, setResource3] = useState<string>('')
+  const [resource4, setResource4] = useState<string>('')
 
   const onShowResource = () => {
     setShowResources(true)
@@ -58,12 +71,65 @@ const EditModal: React.FC<EditModalProps> = ({
   const handleOption4 = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOption4(event.target.value)
   }
+  const handleResourceChange1 = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setResource1(event.target.value)
+  }
+  const handleResourceChange2 = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setResource2(event.target.value)
+  }
+  const handleResourceChange3 = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setResource3(event.target.value)
+  }
+  const handleResourceChange4 = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setResource4(event.target.value)
+  }
+
+  const [fileUpload, setFileUpload] = useState<any>(null)
+  const [fileLink, setFileLink] = useState<string>('')
+
+  const uploadFile = () => {
+    if (fileUpload === null) return
+
+    const fileRef = ref(storage, `questionFiles/${name}/${qid}`)
+    uploadBytes(fileRef, fileUpload)
+      .then(() => {
+        alert('file uploaded')
+        getDownloadURL(fileRef).then((url) => {
+          setFileLink(url.toString())
+        })
+      })
+      .catch((error) => {
+        alert('ERROR ***** ERROR ******ERROR')
+      })
+  }
+  const removeFile = () => {
+    const fileRef = ref(storage, `questionFiles/${name}/${qid}`)
+    deleteObject(fileRef)
+      .then(() => {
+        alert('file deleted')
+        setFileLink('')
+      })
+      .catch((error) => {
+        alert(error)
+      })
+  }
+
   const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const updatedQuestion = {
       question,
       questionAnswer,
       questionOptions: [option1, option2, option3, option4],
+      questionResources: [resource1, resource2, resource3, resource4],
+      fileURL: fileLink,
     }
 
     const questionRef = doc(firestore, `topics/${name}/questions`, qid)
@@ -101,12 +167,26 @@ const EditModal: React.FC<EditModalProps> = ({
                 Question Text
               </Text>
               <Input required onChange={handleQuestionText} />
-
+              <>
+                <Image src={fileURL} />
+                <input
+                  type="file"
+                  required
+                  onChange={(event) => {
+                    if (event.target.files === null) {
+                      console.log('No file selected')
+                    } else {
+                      setFileUpload(event.target.files[0])
+                    }
+                  }}
+                />
+                <Button onClick={uploadFile}>Replace Image</Button>
+                <Button onClick={removeFile}>Remove Image</Button>
+              </>
               <Text fontWeight={600} fontSize={15}>
                 Answer
               </Text>
               <Input required onChange={handleAnswer}></Input>
-
               <AddQoptions
                 hfunctions={[
                   handleOption1,
@@ -115,10 +195,19 @@ const EditModal: React.FC<EditModalProps> = ({
                   handleOption4,
                 ]}
               />
-
               <Button onClick={onShowResource}>Add Resources</Button>
-              {showResources ? <AddResources /> : ''}
-
+              {showResources ? (
+                <AddResources
+                  hfunctions={[
+                    handleResourceChange1,
+                    handleResourceChange2,
+                    handleResourceChange3,
+                    handleResourceChange4,
+                  ]}
+                />
+              ) : (
+                ''
+              )}
               <Button type="submit"> Save</Button>
             </form>
           </ModalBody>
@@ -129,10 +218,38 @@ const EditModal: React.FC<EditModalProps> = ({
 }
 export default EditModal
 
+type imageProps = {
+  qid: string
+  name: string
+  file: any
+}
+
+const AddImage: React.FC<imageProps> = (data) => {
+  return (
+    <>
+      {data.file != '' ? (
+        <>
+          <Image objectFit="cover" src={data.file} alt="" />
+          <ImageInput qid={data.qid} name={data.name} />
+        </>
+      ) : (
+        'Add File ?'
+      )}
+    </>
+  )
+}
+type ImageInputProps = {
+  qid: string
+  name: string
+}
+
+const ImageInput: React.FC<ImageInputProps> = (data) => {
+  return <></>
+}
+
 type addOptionsProps = {
   hfunctions: any[]
 }
-
 const AddQoptions: React.FC<addOptionsProps> = (data) => {
   return (
     <>
@@ -167,12 +284,13 @@ const AddQoptions: React.FC<addOptionsProps> = (data) => {
   )
 }
 
-type addResourcesProps = {}
+type addResourcesProps = {
+  hfunctions: any[]
+}
 
-const AddResources: React.FC<addResourcesProps> = () => {
+const AddResources: React.FC<addResourcesProps> = (data) => {
   const [numOfLOs, setNumOfLOs] = useState<number>(0)
   const [error, setError] = useState('')
-  const [resourceList, setResourceList] = useState([])
   const MAX_RESOURCES: number = 4
 
   const handleNumOfResources = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -183,13 +301,6 @@ const AddResources: React.FC<addResourcesProps> = () => {
       setError(`Resources must be a max of ${MAX_RESOURCES}`)
       return
     }
-  }
-
-  const handleResourceList = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setResourceList((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }))
   }
   return (
     <>
@@ -209,12 +320,46 @@ const AddResources: React.FC<addResourcesProps> = () => {
             .map((n, i) => {
               return (
                 <div key={i}>
-                  <CustomInput
-                    name={''}
-                    handleInputFunction={handleResourceList}
-                    placeholder={`Link-${i + 1}`}
-                    isRequired={true}
-                  />
+                  {i == 0 ? (
+                    <CustomInput
+                      name={''}
+                      handleInputFunction={data.hfunctions[0]}
+                      placeholder={`Link-${i + 1}`}
+                      isRequired={true}
+                    />
+                  ) : (
+                    ''
+                  )}
+                  {i == 1 ? (
+                    <CustomInput
+                      name={''}
+                      handleInputFunction={data.hfunctions[1]}
+                      placeholder={`Link-${i + 1}`}
+                      isRequired={true}
+                    />
+                  ) : (
+                    ''
+                  )}
+                  {i == 2 ? (
+                    <CustomInput
+                      name={''}
+                      handleInputFunction={data.hfunctions[2]}
+                      placeholder={`Link-${i + 1}`}
+                      isRequired={true}
+                    />
+                  ) : (
+                    ''
+                  )}
+                  {i == 3 ? (
+                    <CustomInput
+                      name={''}
+                      handleInputFunction={data.hfunctions[3]}
+                      placeholder={`Link-${i + 1}`}
+                      isRequired={true}
+                    />
+                  ) : (
+                    ''
+                  )}
                 </div>
               )
             })}
