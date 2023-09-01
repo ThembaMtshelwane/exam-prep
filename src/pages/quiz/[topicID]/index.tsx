@@ -59,7 +59,7 @@ const QuizPage: React.FC<QuizPageProps> = ({ topicQuestionData, name }) => {
               <Stack spacing={5}>
                 {topicQuestionData.map((data: any, index: number) => (
                   <ListItem key={index}>
-                    <PreviewCard data={data} />
+                    <PreviewCard questionPreview={data} name={name} />
                   </ListItem>
                 ))}
               </Stack>
@@ -192,10 +192,11 @@ const StudentInformationButton: React.FC<studentInfo> = ({ studentInfo }) => {
 }
 
 type previewProps = {
-  data: any
+  questionPreview: any
+  name: string
 }
 
-const PreviewCard: React.FC<previewProps> = (questionPreview) => {
+const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
   const {
     questionID,
     fileURL,
@@ -203,7 +204,8 @@ const PreviewCard: React.FC<previewProps> = (questionPreview) => {
     questionAnswer,
     questionOptions,
     questionResources,
-  } = questionPreview.data
+  } = questionPreview
+
   return (
     <Box boxShadow="1px 1px 3px 2px rgba(97, 143, 217, .25)" m={2} p={5}>
       <Text>Question ID: {questionID}</Text>
@@ -214,23 +216,23 @@ const PreviewCard: React.FC<previewProps> = (questionPreview) => {
       <DisplayOptions options={questionOptions} />
       <DisplayResources resources={questionResources} />
       <br />
-      <EditButton questionID={questionID} resourceList={questionResources} />
+      <EditButton questionID={questionID} name={name} />
     </Box>
   )
 }
 
 type editProps = {
-  questionID: any
-  resourceList: string[]
+  questionID: string
+  name: string
 }
 
-const EditButton: React.FC<editProps> = (questionID, resourceList) => {
+const EditButton: React.FC<editProps> = ({ questionID, name }) => {
   const [open, setOpen] = useState(false)
-
   return (
     <>
       <EditModal
-        qid={questionID.questionID}
+        qid={questionID}
+        name={name}
         open={open}
         handleClose={() => setOpen(false)}
       />

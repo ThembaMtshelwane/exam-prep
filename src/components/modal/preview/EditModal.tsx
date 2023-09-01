@@ -1,3 +1,4 @@
+import { firestore } from '@/src/firebase/clientApp'
 import {
   Modal,
   ModalOverlay,
@@ -11,21 +12,65 @@ import {
   Text,
   ModalFooter,
 } from '@chakra-ui/react'
+import { doc, updateDoc } from 'firebase/firestore'
 import React, { useState } from 'react'
 
 type EditModalProps = {
   qid: string
+  name: string
   open: boolean
   handleClose: () => void
 }
 
-const EditModal: React.FC<EditModalProps> = ({ qid, open, handleClose }) => {
+const EditModal: React.FC<EditModalProps> = ({
+  qid,
+  name,
+  open,
+  handleClose,
+}) => {
   const [showResources, setShowResources] = useState<boolean>(false)
-  const onSumbit = () => {
-    console.log('Update the question')
-  }
+  const [questionAnswer, setAnswer] = useState<string>('')
+  const [question, setQuestion] = useState<string>('')
+  const [option1, setOption1] = useState<string>('')
+  const [option2, setOption2] = useState<string>('')
+  const [option3, setOption3] = useState<string>('')
+  const [option4, setOption4] = useState<string>('')
+
   const onShowResource = () => {
     setShowResources(true)
+  }
+  const handleQuestionText = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuestion(event.target.value)
+  }
+
+  const handleAnswer = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAnswer(event.target.value)
+  }
+  const handleOption1 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOption1(event.target.value)
+  }
+  const handleOption2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOption2(event.target.value)
+  }
+  const handleOption3 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOption3(event.target.value)
+  }
+  const handleOption4 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOption4(event.target.value)
+  }
+  const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const updatedQuestion = {
+      question,
+      questionAnswer,
+      questionOptions: [option1, option2, option3, option4],
+    }
+
+    const questionRef = doc(firestore, `topics/${name}/questions`, qid)
+    await updateDoc(questionRef, updatedQuestion)
+    console.log('question updated')
+    console.log(updatedQuestion)
+    window.location.reload()
   }
 
   return (
@@ -51,24 +96,32 @@ const EditModal: React.FC<EditModalProps> = ({ qid, open, handleClose }) => {
             justifyContent="center"
             pb={6}
           >
-            <form onSubmit={onSumbit}>
+            <form onSubmit={handleUpdate}>
               <Text fontWeight={600} fontSize={15}>
                 Question Text
               </Text>
-              <Input required />
+              <Input required onChange={handleQuestionText} />
+
               <Text fontWeight={600} fontSize={15}>
                 Answer
               </Text>
-              <Input required></Input>
-              <AddQoptions />
+              <Input required onChange={handleAnswer}></Input>
+
+              <AddQoptions
+                hfunctions={[
+                  handleOption1,
+                  handleOption2,
+                  handleOption3,
+                  handleOption4,
+                ]}
+              />
 
               <Button onClick={onShowResource}>Add Resources</Button>
               {showResources ? <AddResources /> : ''}
+
+              <Button type="submit"> Save</Button>
             </form>
           </ModalBody>
-          <ModalFooter>
-            <SaveButton />
-          </ModalFooter>
         </Box>
       </ModalContent>
     </Modal>
@@ -76,35 +129,11 @@ const EditModal: React.FC<EditModalProps> = ({ qid, open, handleClose }) => {
 }
 export default EditModal
 
-type saveProps = {}
-const SaveButton: React.FC<saveProps> = () => {
-  return (
-    <>
-      <Button>Save</Button>
-    </>
-  )
+type addOptionsProps = {
+  hfunctions: any[]
 }
 
-type addOptionsProps = {}
-
-const AddQoptions: React.FC<addOptionsProps> = () => {
-  const [option1, setOption1] = useState<string>('')
-  const [option2, setOption2] = useState<string>('')
-  const [option3, setOption3] = useState<string>('')
-  const [option4, setOption4] = useState<string>('')
-
-  const handleOption1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOption1(event.target.value)
-  }
-  const handleOption2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOption2(event.target.value)
-  }
-  const handleOption3 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOption3(event.target.value)
-  }
-  const handleOption4 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOption4(event.target.value)
-  }
+const AddQoptions: React.FC<addOptionsProps> = (data) => {
   return (
     <>
       <Text fontWeight={600} fontSize={15}>
@@ -112,25 +141,25 @@ const AddQoptions: React.FC<addOptionsProps> = () => {
       </Text>
       <CustomInput
         name={'A'}
-        handleInputFunction={handleOption1}
+        handleInputFunction={data.hfunctions[0]}
         placeholder={'Orange'}
         isRequired={true}
       />
       <CustomInput
         name={'B'}
-        handleInputFunction={handleOption2}
+        handleInputFunction={data.hfunctions[1]}
         placeholder={'Yellow'}
         isRequired={true}
       />
       <CustomInput
         name={'C'}
-        handleInputFunction={handleOption3}
+        handleInputFunction={data.hfunctions[2]}
         placeholder={'Blue'}
         isRequired={true}
       />
       <CustomInput
         name={'D'}
-        handleInputFunction={handleOption4}
+        handleInputFunction={data.hfunctions[3]}
         placeholder={'Green'}
         isRequired={true}
       />
@@ -141,10 +170,6 @@ const AddQoptions: React.FC<addOptionsProps> = () => {
 type addResourcesProps = {}
 
 const AddResources: React.FC<addResourcesProps> = () => {
-  const [resource1, setResource1] = useState<string>('')
-  const [resource2, setResource2] = useState<string>('')
-  const [resource3, setResource3] = useState<string>('')
-  const [resource4, setResource4] = useState<string>('')
   const [numOfLOs, setNumOfLOs] = useState<number>(0)
   const [error, setError] = useState('')
   const [resourceList, setResourceList] = useState([])
