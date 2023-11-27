@@ -48,7 +48,7 @@ const EditModal: React.FC<EditModalProps> = ({
   const [resource2, setResource2] = useState<string>('')
   const [resource3, setResource3] = useState<string>('')
   const [resource4, setResource4] = useState<string>('')
-
+  const [isEditImage, setIsEditImage] = useState<boolean>(false)
   const onShowResource = () => {
     setShowResources(true)
   }
@@ -121,6 +121,12 @@ const EditModal: React.FC<EditModalProps> = ({
         alert(error)
       })
   }
+  const editImage = () => {
+    setIsEditImage((prevState) => {
+      const newSate = !prevState
+      return newSate
+    })
+  }
 
   const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -167,22 +173,27 @@ const EditModal: React.FC<EditModalProps> = ({
                 Question Text
               </Text>
               <Input required onChange={handleQuestionText} />
-              <>
-                <Image src={fileURL} />
-                <input
-                  type="file"
-                  required
-                  onChange={(event) => {
-                    if (event.target.files === null) {
-                      console.log('No file selected')
-                    } else {
-                      setFileUpload(event.target.files[0])
-                    }
-                  }}
-                />
-                <Button onClick={uploadFile}>Replace Image</Button>
-                <Button onClick={removeFile}>Remove Image</Button>
-              </>
+              <Button onClick={editImage}>Edit image</Button>
+              {isEditImage ? (
+                <>
+                  <Image src={fileURL} />
+                  <input
+                    type="file"
+                    onChange={(event) => {
+                      if (event.target.files === null) {
+                        console.log('No file selected')
+                      } else {
+                        setFileUpload(event.target.files[0])
+                      }
+                    }}
+                  />
+                  <Button onClick={uploadFile}>Replace Image</Button>
+                  <Button onClick={removeFile}>Remove Image</Button>
+                </>
+              ) : (
+                ''
+              )}
+
               <Text fontWeight={600} fontSize={15}>
                 Answer
               </Text>
