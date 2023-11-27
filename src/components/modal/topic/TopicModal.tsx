@@ -41,16 +41,36 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
   const [error, setError] = useState('')
   const [LOList, setLOList] = useState([])
   const [loading, setLoading] = useState(false)
+  const [isValidQuiz, setIsValidQuiz] = useState(false)
 
   const MIN_LEARNING_OBJECTIVES = 4
   const MAX_LEARNING_OBJECTIVES = 8
   const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTopicName(event.target.value)
+    const value = event.target.value
+    setTopicName(value)
+
+    if (value.length < 3 || value.length > 20) {
+      setError('Topic name should be between 3 and 20 characters')
+      setIsValidQuiz(false)
+    } else if (!/^[a-zA-Z]+$/.test(value)) {
+      setError('Topic name should only contain letters')
+      setIsValidQuiz(false)
+    } else if (/\s/.test(value)) {
+      setError('Topic name should not contain spaces')
+      setIsValidQuiz(false)
+    } else {
+      setError('')
+      setIsValidQuiz(true)
+    }
     topic_Name = topicName
   }
 
   const handleModuleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setModule(event.target.value)
+    const value = event.target.value
+    setModule(value)
+    // if (!/^[a-zA-Z0-9]+$/.test(value)) {
+    //   setError('Topic name should only contain letters and numbers')
+    // }
     module_Name = module
   }
 
@@ -77,22 +97,6 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
   // () => {}
   const handleCreateQuiz = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
-    //Validate the quiz topic name
-    const format = /[` !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
-
-    if (format.test(module)) {
-      setError('Topic names must only contain letters or numbers.')
-      return
-    }
-
-    if (format.test(topicName) || topicName.length < 3) {
-      setError(
-        'Topic name must be 3-21 characters, can only contain letters and NO SPACES'
-      )
-      return
-    }
-
     setLoading(true)
     try {
       //Create the quiz document in firestore
@@ -126,9 +130,9 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
         router.push(`topics/${topicName}`)
       })
     } catch (error: any) {
-      console.log('handleCreateQuiz error ', error)
       setError(error.message)
     }
+
     setLoading(false)
   }
 
@@ -219,16 +223,18 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                             </div>
                           )
                         })}
-                  <Button
-                    bg="#265e9e"
-                    color="white"
-                    margin="2px"
-                    type="submit"
-                    width="50%"
-                    isLoading={loading}
-                  >
-                    Continue
-                  </Button>
+                  {isValidQuiz && (
+                    <Button
+                      bg="#265e9e"
+                      color="white"
+                      margin="2px"
+                      type="submit"
+                      width="50%"
+                      isLoading={loading}
+                    >
+                      Continue
+                    </Button>
+                  )}
                 </Flex>
               </form>
             </ModalBody>
