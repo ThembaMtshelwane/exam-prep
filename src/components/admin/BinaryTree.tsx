@@ -1,14 +1,17 @@
 import React from 'react'
-import { Flex, Box } from '@chakra-ui/react'
+import { Flex, Box, Link, Button } from '@chakra-ui/react'
 import QuestionNode from './QuestionNode'
+import { levelIDs } from './data'
 
 interface BinaryTreeProps {
   n: number
+  topicID: string
 }
 
-const BinaryTree: React.FC<BinaryTreeProps> = ({ n }) => {
+const BinaryTree: React.FC<BinaryTreeProps> = ({ n, topicID }) => {
   const renderBlocks = (count: number): JSX.Element => {
     const totalBlocks = 2 * n - 1 // Total number of blocks
+    const levelID = levelIDs.splice(0, totalBlocks)
 
     const renderTree = (index: number): JSX.Element => {
       if (index >= totalBlocks) return <></>
@@ -24,7 +27,14 @@ const BinaryTree: React.FC<BinaryTreeProps> = ({ n }) => {
           flexDirection="column"
         >
           <Box margin={1}>
-            <QuestionNode content={`Question ${index + 1}`} />
+            <Button>
+              {/* When button is clicked show a pop-up that allows to edit.  */}
+              <QuestionNode
+                content={`Question ${index + 1}`}
+                topicID={topicID}
+                id={levelID[index]}
+              />
+            </Button>
           </Box>
           <Flex padding={0} margin="0">
             {renderTree(leftChildIndex)}

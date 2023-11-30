@@ -15,7 +15,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID, numOfLOs }) => {
   return (
     <div>
       <h1>Create {topicID} quiz</h1>
-      <BinaryTree n={numOfLOs} /> {/* Example with n = 2 */}
+      <BinaryTree n={numOfLOs} topicID={topicID} /> {/* Example with n = 2 */}
     </div>
   )
 }

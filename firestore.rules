@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow read and write access to the 'user' collection
+    match /students/{document=**} {
+      allow read, write: if true; // This grants full access (for testing purposes)
+      // Modify the condition based on your security requirements
+    }
+    match /topics/{document=**} {
+      allow read, write: if true; // This grants full access (for testing purposes)
+      // Modify the condition based on your security requirements
+    }
+    match /lecturers/{document=**} {
+      allow read, write: if true; // This grants full access (for testing purposes)
+      // Modify the condition based on your security requirements
+    }
+    
+    // Add other collections and their rules if needed
+    // match /other_collection/{document=**} {
+    //   allow read, write: if <condition>;
+    // }
+  }
+}

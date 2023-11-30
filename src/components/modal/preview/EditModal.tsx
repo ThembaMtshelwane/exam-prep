@@ -10,7 +10,6 @@ import {
   Button,
   Box,
   Text,
-  ModalFooter,
   Image,
 } from '@chakra-ui/react'
 import { doc, updateDoc } from 'firebase/firestore'
@@ -21,6 +20,8 @@ import {
   deleteObject,
 } from 'firebase/storage'
 import React, { useState } from 'react'
+import CustomInput from '../../input/CustomInput'
+import InputList, { AddResources } from '../../lists/InputList'
 
 type EditModalProps = {
   qid: string
@@ -40,25 +41,37 @@ const EditModal: React.FC<EditModalProps> = ({
   const [showResources, setShowResources] = useState<boolean>(false)
   const [questionAnswer, setAnswer] = useState<string>('')
   const [question, setQuestion] = useState<string>('')
+
   const [option1, setOption1] = useState<string>('')
   const [option2, setOption2] = useState<string>('')
   const [option3, setOption3] = useState<string>('')
   const [option4, setOption4] = useState<string>('')
+  const placeholders = ['A', 'B', 'C', 'D']
+
   const [resource1, setResource1] = useState<string>('')
   const [resource2, setResource2] = useState<string>('')
   const [resource3, setResource3] = useState<string>('')
   const [resource4, setResource4] = useState<string>('')
+
   const [isEditImage, setIsEditImage] = useState<boolean>(false)
+  const [fileUpload, setFileUpload] = useState<any>(null)
+  const [fileLink, setFileLink] = useState<string>('')
+
   const onShowResource = () => {
     setShowResources(true)
   }
+
+  // Change question text
   const handleQuestionText = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuestion(event.target.value)
   }
 
+  // Change answer text
   const handleAnswer = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAnswer(event.target.value)
   }
+
+  // Change option text
   const handleOption1 = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOption1(event.target.value)
   }
@@ -71,6 +84,8 @@ const EditModal: React.FC<EditModalProps> = ({
   const handleOption4 = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOption4(event.target.value)
   }
+
+  // Change resources
   const handleResourceChange1 = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -92,9 +107,7 @@ const EditModal: React.FC<EditModalProps> = ({
     setResource4(event.target.value)
   }
 
-  const [fileUpload, setFileUpload] = useState<any>(null)
-  const [fileLink, setFileLink] = useState<string>('')
-
+  // Edit image
   const uploadFile = () => {
     if (fileUpload === null) return
 
@@ -173,6 +186,7 @@ const EditModal: React.FC<EditModalProps> = ({
                 Question Text
               </Text>
               <Input required onChange={handleQuestionText} />
+              
               <Button onClick={editImage}>Edit image</Button>
               {isEditImage ? (
                 <>
@@ -198,13 +212,16 @@ const EditModal: React.FC<EditModalProps> = ({
                 Answer
               </Text>
               <Input required onChange={handleAnswer}></Input>
-              <AddQoptions
+
+              <InputList
+                listName="Options"
                 hfunctions={[
                   handleOption1,
                   handleOption2,
                   handleOption3,
                   handleOption4,
                 ]}
+                placeholders={placeholders}
               />
               <Button onClick={onShowResource}>Add Resources</Button>
               {showResources ? (
@@ -228,193 +245,3 @@ const EditModal: React.FC<EditModalProps> = ({
   )
 }
 export default EditModal
-
-type imageProps = {
-  qid: string
-  name: string
-  file: any
-}
-
-const AddImage: React.FC<imageProps> = (data) => {
-  return (
-    <>
-      {data.file != '' ? (
-        <>
-          <Image objectFit="cover" src={data.file} alt="" />
-          <ImageInput qid={data.qid} name={data.name} />
-        </>
-      ) : (
-        'Add File ?'
-      )}
-    </>
-  )
-}
-type ImageInputProps = {
-  qid: string
-  name: string
-}
-
-const ImageInput: React.FC<ImageInputProps> = (data) => {
-  return <></>
-}
-
-type addOptionsProps = {
-  hfunctions: any[]
-}
-const AddQoptions: React.FC<addOptionsProps> = (data) => {
-  return (
-    <>
-      <Text fontWeight={600} fontSize={15}>
-        Options
-      </Text>
-      <CustomInput
-        name={'A'}
-        handleInputFunction={data.hfunctions[0]}
-        placeholder={'Orange'}
-        isRequired={true}
-      />
-      <CustomInput
-        name={'B'}
-        handleInputFunction={data.hfunctions[1]}
-        placeholder={'Yellow'}
-        isRequired={true}
-      />
-      <CustomInput
-        name={'C'}
-        handleInputFunction={data.hfunctions[2]}
-        placeholder={'Blue'}
-        isRequired={true}
-      />
-      <CustomInput
-        name={'D'}
-        handleInputFunction={data.hfunctions[3]}
-        placeholder={'Green'}
-        isRequired={true}
-      />
-    </>
-  )
-}
-
-type addResourcesProps = {
-  hfunctions: any[]
-}
-
-const AddResources: React.FC<addResourcesProps> = (data) => {
-  const [numOfLOs, setNumOfLOs] = useState<number>(0)
-  const [error, setError] = useState('')
-  const MAX_RESOURCES: number = 4
-
-  const handleNumOfResources = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setError('')
-    setNumOfLOs(Number(event.target.value))
-
-    if (Number(event.target.value) > MAX_RESOURCES) {
-      setError(`Resources must be a max of ${MAX_RESOURCES}`)
-      return
-    }
-  }
-  return (
-    <>
-      <Text>Number of Resources</Text>
-      <Input
-        value={numOfLOs}
-        size="sm"
-        name="numOfLOs"
-        onChange={handleNumOfResources}
-        required
-      ></Input>
-
-      {numOfLOs <= 4 ? (
-        <>
-          {Array(+Number(numOfLOs))
-            .fill('')
-            .map((n, i) => {
-              return (
-                <div key={i}>
-                  {i == 0 ? (
-                    <CustomInput
-                      name={''}
-                      handleInputFunction={data.hfunctions[0]}
-                      placeholder={`Link-${i + 1}`}
-                      isRequired={true}
-                    />
-                  ) : (
-                    ''
-                  )}
-                  {i == 1 ? (
-                    <CustomInput
-                      name={''}
-                      handleInputFunction={data.hfunctions[1]}
-                      placeholder={`Link-${i + 1}`}
-                      isRequired={true}
-                    />
-                  ) : (
-                    ''
-                  )}
-                  {i == 2 ? (
-                    <CustomInput
-                      name={''}
-                      handleInputFunction={data.hfunctions[2]}
-                      placeholder={`Link-${i + 1}`}
-                      isRequired={true}
-                    />
-                  ) : (
-                    ''
-                  )}
-                  {i == 3 ? (
-                    <CustomInput
-                      name={''}
-                      handleInputFunction={data.hfunctions[3]}
-                      placeholder={`Link-${i + 1}`}
-                      isRequired={true}
-                    />
-                  ) : (
-                    ''
-                  )}
-                </div>
-              )
-            })}
-        </>
-      ) : (
-        <Text color="red">{error}</Text>
-      )}
-    </>
-  )
-}
-
-type customInputProps = {
-  name: string
-  handleInputFunction: any
-  placeholder: string
-  isRequired: boolean
-}
-
-const CustomInput: React.FC<customInputProps> = ({
-  name,
-  handleInputFunction,
-  placeholder,
-  isRequired,
-}) => {
-  return (
-    <>
-      {isRequired ? (
-        <Input
-          mt={2}
-          size="sm"
-          placeholder={placeholder}
-          required
-          name={name}
-          onChange={handleInputFunction}
-        ></Input>
-      ) : (
-        <Input
-          mt={2}
-          size="sm"
-          placeholder={placeholder}
-          name={name}
-          onChange={handleInputFunction}
-        ></Input>
-      )}
-    </>
-  )
-}

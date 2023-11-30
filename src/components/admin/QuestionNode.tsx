@@ -8,21 +8,20 @@ import {
   Image,
   Box,
 } from '@chakra-ui/react'
+import { EditButton } from '../buttons/EditButton'
+
 interface BlockProps {
   content: string
+  id: string
+  topicID: string
 }
 
-const QuestionNode: React.FC<BlockProps> = ({ content }) => {
+const QuestionNode: React.FC<BlockProps> = ({ content, id, topicID }) => {
+  // use the id to create a question
   return (
     <div>
-      <Box
-        border="2px solid black"
-        width="100%"
-        height="50%"
-        textAlign="center"
-      >
-        <h1>{content}</h1>
-      </Box>
+      <h1>{content}</h1>
+      <EditButton questionID={id} name={topicID} fileURL={''} />
     </div>
   )
 }
