@@ -1,3 +1,4 @@
+import React, { useState, ChangeEvent, FormEvent } from 'react'
 import { firestore, storage } from '@/src/firebase/clientApp'
 import {
   Modal,
@@ -19,7 +20,6 @@ import {
   getDownloadURL,
   deleteObject,
 } from 'firebase/storage'
-import React, { useState } from 'react'
 import CustomInput from '../../input/CustomInput'
 import InputList, { AddResources } from '../../lists/InputList'
 
@@ -30,6 +30,8 @@ type EditModalProps = {
   handleClose: () => void
   fileURL: any
 }
+
+
 
 const EditModal: React.FC<EditModalProps> = ({
   qid,
@@ -42,136 +44,75 @@ const EditModal: React.FC<EditModalProps> = ({
   const [questionAnswer, setAnswer] = useState<string>('')
   const [question, setQuestion] = useState<string>('')
 
-  const [option1, setOption1] = useState<string>('')
-  const [option2, setOption2] = useState<string>('')
-  const [option3, setOption3] = useState<string>('')
-  const [option4, setOption4] = useState<string>('')
-  const placeholders = ['A', 'B', 'C', 'D']
-
-  const [resource1, setResource1] = useState<string>('')
-  const [resource2, setResource2] = useState<string>('')
-  const [resource3, setResource3] = useState<string>('')
-  const [resource4, setResource4] = useState<string>('')
-
   const [isEditImage, setIsEditImage] = useState<boolean>(false)
-  const [fileUpload, setFileUpload] = useState<any>(null)
+  const [fileUpload, setFileUpload] = useState<File | null>(null)
   const [fileLink, setFileLink] = useState<string>('')
 
   const onShowResource = () => {
     setShowResources(true)
   }
 
-  // Change question text
-  const handleQuestionText = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuestion(event.target.value)
+  const handleInputChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    setter(event.target.value)
   }
 
-  // Change answer text
-  const handleAnswer = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAnswer(event.target.value)
-  }
-
-  // Change option text
-  const handleOption1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOption1(event.target.value)
-  }
-  const handleOption2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOption2(event.target.value)
-  }
-  const handleOption3 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOption3(event.target.value)
-  }
-  const handleOption4 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOption4(event.target.value)
-  }
-
-  // Change resources
-  const handleResourceChange1 = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setResource1(event.target.value)
-  }
-  const handleResourceChange2 = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setResource2(event.target.value)
-  }
-  const handleResourceChange3 = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setResource3(event.target.value)
-  }
-  const handleResourceChange4 = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setResource4(event.target.value)
-  }
-
-  // Edit image
   const uploadFile = () => {
     if (fileUpload === null) return
 
     const fileRef = ref(storage, `questionFiles/${name}/${qid}`)
     uploadBytes(fileRef, fileUpload)
       .then(() => {
-        alert('file uploaded')
+        alert('File uploaded')
         getDownloadURL(fileRef).then((url) => {
           setFileLink(url.toString())
         })
       })
       .catch((error) => {
-        alert('ERROR ***** ERROR ******ERROR')
+        alert('Error uploading file')
+        console.error(error)
       })
   }
+
   const removeFile = () => {
     const fileRef = ref(storage, `questionFiles/${name}/${qid}`)
     deleteObject(fileRef)
       .then(() => {
-        alert('file deleted')
+        alert('File deleted')
         setFileLink('')
       })
       .catch((error) => {
-        alert(error)
+        alert('Error deleting file')
+        console.error(error)
       })
   }
+
   const editImage = () => {
-    setIsEditImage((prevState) => {
-      const newSate = !prevState
-      return newSate
-    })
+    setIsEditImage((prevState) => !prevState)
   }
 
-  const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const updatedQuestion = {
       question,
       questionAnswer,
-      questionOptions: [option1, option2, option3, option4],
-      questionResources: [resource1, resource2, resource3, resource4],
+      // questionOptions: options,
+      // questionResources: Object.values(resources),
       fileURL: fileLink,
     }
 
     const questionRef = doc(firestore, `topics/${name}/questions`, qid)
     await updateDoc(questionRef, updatedQuestion)
-    console.log('question updated')
-    console.log(updatedQuestion)
-    window.location.reload()
+    // Avoid hard reload, consider updating state or fetching new data here
   }
 
   return (
     <Modal isOpen={open} onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader
-          display="flex"
-          flexDirection="column"
-          padding={3}
-          textAlign="center"
-          mt={5}
-          mb={0}
-        >
-          Edit Question {qid}
-        </ModalHeader>
+        <ModalHeader>Edit Question {qid}</ModalHeader>
         <Box pl={3} pr={3}>
           <ModalCloseButton />
           <ModalBody
@@ -185,8 +126,11 @@ const EditModal: React.FC<EditModalProps> = ({
               <Text fontWeight={600} fontSize={15}>
                 Question Text
               </Text>
-              <Input required onChange={handleQuestionText} />
-              
+              <Input
+                required
+                onChange={(e) => handleInputChange(e, setQuestion)}
+              />
+
               <Button onClick={editImage}>Edit image</Button>
               {isEditImage ? (
                 <>
@@ -211,32 +155,19 @@ const EditModal: React.FC<EditModalProps> = ({
               <Text fontWeight={600} fontSize={15}>
                 Answer
               </Text>
-              <Input required onChange={handleAnswer}></Input>
-
-              <InputList
-                listName="Options"
-                hfunctions={[
-                  handleOption1,
-                  handleOption2,
-                  handleOption3,
-                  handleOption4,
-                ]}
-                placeholders={placeholders}
+              <Input
+                required
+                onChange={(e) => handleInputChange(e, setAnswer)}
               />
+
+              <InputList/>
               <Button onClick={onShowResource}>Add Resources</Button>
               {showResources ? (
-                <AddResources
-                  hfunctions={[
-                    handleResourceChange1,
-                    handleResourceChange2,
-                    handleResourceChange3,
-                    handleResourceChange4,
-                  ]}
-                />
+                <AddResources/>
               ) : (
                 ''
               )}
-              <Button type="submit"> Save</Button>
+              <Button type="submit">Save</Button>
             </form>
           </ModalBody>
         </Box>
@@ -244,4 +175,5 @@ const EditModal: React.FC<EditModalProps> = ({
     </Modal>
   )
 }
+
 export default EditModal

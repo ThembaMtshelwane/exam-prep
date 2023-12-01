@@ -1,44 +1,46 @@
-import React, { useState } from 'react'
+import React, { useState, ChangeEvent } from 'react'
 import { Text, Input } from '@chakra-ui/react'
 import CustomInput from '../input/CustomInput'
 
-type InputListProps = {
-  listName: string
-  hfunctions: any[]
-  placeholders: string[]
-}
+type InputListProps = { handleOptionsData: (options: string[]) => void }
 
-const InputList: React.FC<InputListProps> = ({
-  listName,
-  hfunctions,
-  placeholders,
-}) => {
+const InputList: React.FC<InputListProps> = ({ handleOptionsData }) => {
+  const [options, setOptions] = useState<string[]>(['', '', '', ''])
+  const placeholders = ['A', 'B', 'C', 'D']
+
+  const handleOptionChange =
+    (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
+      const updatedOptions = [...options]
+      updatedOptions[index] = event.target.value
+      setOptions(updatedOptions)
+      handleOptionsData(updatedOptions) // Sending updated options back to parent component
+    }
   return (
     <>
       <Text fontWeight={600} fontSize={15}>
-        {listName}
+        Options
       </Text>
       <CustomInput
         name={'A'}
-        handleInputFunction={hfunctions[0]}
+        handleInputFunction={handleOptionChange(0)}
         placeholder={placeholders[0]}
         isRequired={true}
       />
       <CustomInput
         name={'B'}
-        handleInputFunction={hfunctions[1]}
+        handleInputFunction={handleOptionChange(1)}
         placeholder={placeholders[1]}
         isRequired={true}
       />
       <CustomInput
         name={'C'}
-        handleInputFunction={hfunctions[2]}
+        handleInputFunction={handleOptionChange(2)}
         placeholder={placeholders[2]}
         isRequired={true}
       />
       <CustomInput
         name={'D'}
-        handleInputFunction={hfunctions[3]}
+        handleInputFunction={handleOptionChange(3)}
         placeholder={placeholders[3]}
         isRequired={true}
       />
@@ -48,14 +50,38 @@ const InputList: React.FC<InputListProps> = ({
 export default InputList
 
 type addResourcesProps = {
-  hfunctions: any[]
+  handleResourcesData: (resourceList: string[]) => void
 }
 
-export const AddResources: React.FC<addResourcesProps> = ({ hfunctions }) => {
+interface ResourceData {
+  resource1: string
+  resource2: string
+  resource3: string
+  resource4: string
+}
+export const AddResources: React.FC<addResourcesProps> = ({
+  handleResourcesData,
+}) => {
   const [numOfLOs, setNumOfLOs] = useState<number>(0)
   const [error, setError] = useState('')
   const MAX_RESOURCES: number = 4
 
+  const [resources, setResources] = useState<ResourceData>({
+    resource1: '',
+    resource2: '',
+    resource3: '',
+    resource4: '',
+  })
+  const handleResourceChange =
+    (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
+      const updatedResources: ResourceData = { ...resources } // Explicitly define the type here
+      const resourceKey = `resource${index + 1}` as keyof ResourceData // Use keyof to narrow the type
+      updatedResources[resourceKey] = event.target.value
+      setResources(updatedResources)
+
+      const updatedResourceList: string[] = Object.values(updatedResources) // Update the resource list
+      handleResourcesData(updatedResourceList) // Sending updated resources back to parent component
+    }
   const handleNumOfResources = (event: React.ChangeEvent<HTMLInputElement>) => {
     setError('')
     setNumOfLOs(Number(event.target.value))
@@ -86,7 +112,7 @@ export const AddResources: React.FC<addResourcesProps> = ({ hfunctions }) => {
                   {i == 0 ? (
                     <CustomInput
                       name={''}
-                      handleInputFunction={hfunctions[0]}
+                      handleInputFunction={handleResourceChange(0)}
                       placeholder={`Link-${i + 1}`}
                       isRequired={true}
                     />
@@ -96,7 +122,7 @@ export const AddResources: React.FC<addResourcesProps> = ({ hfunctions }) => {
                   {i == 1 ? (
                     <CustomInput
                       name={''}
-                      handleInputFunction={hfunctions[1]}
+                      handleInputFunction={handleResourceChange(1)}
                       placeholder={`Link-${i + 1}`}
                       isRequired={true}
                     />
@@ -106,7 +132,7 @@ export const AddResources: React.FC<addResourcesProps> = ({ hfunctions }) => {
                   {i == 2 ? (
                     <CustomInput
                       name={''}
-                      handleInputFunction={hfunctions[2]}
+                      handleInputFunction={handleResourceChange(2)}
                       placeholder={`Link-${i + 1}`}
                       isRequired={true}
                     />
@@ -116,7 +142,7 @@ export const AddResources: React.FC<addResourcesProps> = ({ hfunctions }) => {
                   {i == 3 ? (
                     <CustomInput
                       name={''}
-                      handleInputFunction={hfunctions[3]}
+                      handleInputFunction={handleResourceChange(3)}
                       placeholder={`Link-${i + 1}`}
                       isRequired={true}
                     />

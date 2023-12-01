@@ -6,12 +6,17 @@ import { levelIDs } from './data'
 interface BinaryTreeProps {
   n: number
   topicID: string
+  onQuestionAdded: any
 }
 
-const BinaryTree: React.FC<BinaryTreeProps> = ({ n, topicID }) => {
+const BinaryTree: React.FC<BinaryTreeProps> = ({
+  n,
+  topicID,
+  onQuestionAdded,
+}) => {
   const renderBlocks = (count: number): JSX.Element => {
     const totalBlocks = 2 * n - 1 // Total number of blocks
-    const levelID = levelIDs.splice(0, totalBlocks)
+    const levelID = levelIDs.slice(0, totalBlocks)
 
     const renderTree = (index: number): JSX.Element => {
       if (index >= totalBlocks) return <></>
@@ -26,16 +31,13 @@ const BinaryTree: React.FC<BinaryTreeProps> = ({ n, topicID }) => {
           alignItems="center"
           flexDirection="column"
         >
-          <Box margin={1}>
-            <Button>
-              {/* When button is clicked show a pop-up that allows to edit.  */}
-              <QuestionNode
-                content={`Question ${index + 1}`}
-                topicID={topicID}
-                id={levelID[index]}
-              />
-            </Button>
-          </Box>
+          <QuestionNode
+            content={`Question ${index + 1}`}
+            topicID={topicID}
+            id={levelID[index]}
+            onQuestionAdded={() => onQuestionAdded(index)} // Pass the callback
+          />
+
           <Flex padding={0} margin="0">
             {renderTree(leftChildIndex)}
             {rightChildIndex < totalBlocks && renderTree(rightChildIndex)}

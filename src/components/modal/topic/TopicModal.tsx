@@ -68,22 +68,20 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
   const handleModuleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     setModule(value)
-    // if (!/^[a-zA-Z0-9]+$/.test(value)) {
-    //   setError('Topic name should only contain letters and numbers')
-    // }
     module_Name = module
   }
 
   const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value
     setError('')
-    setNumOfLOs(Number(event.target.value))
+    setNumOfLOs(Number(value))
 
-    if (
-      Number(event.target.value) != MIN_LEARNING_OBJECTIVES &&
-      Number(event.target.value) != MAX_LEARNING_OBJECTIVES
-    ) {
+    if (!/^[0-9]+$/.test(value)) {
       setError('Learning Objectives must be 4 or 8')
-      return
+      setIsValidQuiz(false)
+    } else {
+      setError('')
+      setIsValidQuiz(true)
     }
   }
 
@@ -94,7 +92,6 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
     }))
   }
 
-  // () => {}
   const handleCreateQuiz = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setLoading(true)
@@ -190,7 +187,10 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                 </Text>
 
                 <Text fontWeight={600} fontSize={15}>
-                  Number of Learning Objectives (4 or 8)
+                  Number of Learning Objectives (maximum of 8)
+                </Text>
+                <Text fontWeight={600} fontSize={10}>
+                  Minimum of 4 and maximum of 8
                 </Text>
                 <Input
                   value={numOfLOs}
@@ -198,15 +198,15 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                   name="numOfLOs"
                   onChange={handleChange2}
                   required
-                ></Input>
+                />
 
                 <Text fontWeight={600} fontSize={15} mt={5}>
-                  Enter Learning Obejectives
+                  Enter Learning Objectives
                 </Text>
                 <Flex flexDirection="column">
-                  {numOfLOs != MIN_LEARNING_OBJECTIVES &&
-                  numOfLOs != MAX_LEARNING_OBJECTIVES
-                    ? 'Invalid Learing Objectives'
+                  {numOfLOs < MIN_LEARNING_OBJECTIVES &&
+                  numOfLOs > MAX_LEARNING_OBJECTIVES
+                    ? 'Invalid Leaning Objectives'
                     : Array(+Number(numOfLOs))
                         .fill('')
                         .map((n, i) => {
