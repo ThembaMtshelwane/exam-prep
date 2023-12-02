@@ -18,8 +18,8 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react'
 import { firestore } from '@/src/firebase/clientApp'
-import SaveButton from '../../buttons/SaveButton'
-import InputList, { AddResources } from '../../lists/InputList'
+import SaveButton from '../buttons/SaveButton'
+import InputList, { AddResources } from '../lists/InputList'
 
 type FormData = {
   questionText: string

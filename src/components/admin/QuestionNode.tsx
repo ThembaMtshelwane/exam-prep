@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Flex, Box } from '@chakra-ui/react'
 import AddButton from '../buttons/AddButton'
-import AddModal from '../modal/preview/AddModal'
+import AddModal from './AddModal'
 
 interface QuestionNodeProps {
   content: string

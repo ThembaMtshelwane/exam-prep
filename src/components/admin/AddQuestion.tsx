@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import BinaryTree from './BinaryTree'
-import SaveButton from '../buttons/SaveButton'
 import CustomHeading from '../texts/CustomHeading'
+import BasicButton from '../buttons/BasicButton'
 
 type AddQuestionProps = {
   topicID: string
@@ -29,11 +29,16 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID, numOfLOs }) => {
       <form onSubmit={handleSave}>
         <CustomHeading heading={`Create ${topicID} Quiz`} />
         <BinaryTree
-          n={7}
+          n={numOfLOs}
           topicID={topicID}
           onQuestionAdded={handleQuestionAdded}
         />
-        {allQuestionsAdded && <SaveButton loading={loading} />}
+        {allQuestionsAdded && (
+          <BasicButton
+            routeName={`/quiz/${topicID}`}
+            buttonName={'Save Quiz'}
+          />
+        )}
       </form>
     </div>
   )

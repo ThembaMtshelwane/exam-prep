@@ -5,10 +5,9 @@ import { Box, ListItem, Stack, List, Heading } from '@chakra-ui/react'
 import PageContent from '@/src/components/layout/PageContent'
 import BasicButton from '@/src/components/buttons/BasicButton'
 import PreviewCard from '@/src/components/modal/preview/PreviewCard'
-import NoData from '@/src/components/modal/preview/NoData'
+import NoData from '@/src/components/texts/NoData'
 
 type QuizPageProps = {
-  // All topic data=> questions, options...
   topicQuestionData: any[]
   name: string
 }
@@ -21,6 +20,8 @@ const QuizPage: React.FC<QuizPageProps> = ({ topicQuestionData, name }) => {
     }
     handleName()
   })
+
+  console.log(topicQuestionData)
 
   return (
     <>

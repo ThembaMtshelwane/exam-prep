@@ -38,7 +38,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
 
   return (
     <>
-      {/* Wkecome the lecturer */}
+      {/* Welcome the lecturer */}
       <Heading p={5}> Welcome {user?.email}. </Heading>
 
       <TopicModal open={open} handleClose={() => setOpen(false)} />
@@ -65,7 +65,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
             isLoading={loading}
             onClick={fetchLectureData}
           >
-            <Text> Show Your Quizes</Text>
+            <Text> Show Your Quizzes</Text>
           </Button>
         ) : (
           <Box m={2} p={5} boxShadow="1px 1px 3px 2px rgba(97, 143, 217, .25)">
@@ -76,7 +76,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
               mt="20px"
             >
               <Text fontWeight={600} fontSize={20}>
-                Previously Made Quizes
+                Previously Made Quizzes
               </Text>
 
               <List width="100%">
@@ -105,7 +105,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
                                 <Text>Topic: {prevID.topicID}</Text>
                                 <Text>Course Code: {prevID.courseCode}</Text>
                                 <Text>
-                                  Number of learning oblectives:{' '}
+                                  Number of learning objectives:{' '}
                                   {prevID.numberOfLearningObjectives}
                                 </Text>
                                 <Text>

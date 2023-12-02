@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Button } from '@chakra-ui/react'
 
 interface AddButtonProps {
@@ -7,7 +6,6 @@ interface AddButtonProps {
 }
 
 const AddButton: React.FC<AddButtonProps> = ({ onClick, disabled }) => {
-  const [questionAdded, setQuestionAdded] = useState(false)
 
   return (
     <>

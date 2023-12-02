@@ -3,5 +3,6 @@
   "files.associations": {
     "*.ejs": "html",
     "plyconfig.json": "jsonc"
-  }
+  },
+  "cSpell.words": ["chakra"]
 }
