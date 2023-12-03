@@ -38,6 +38,7 @@ interface AddModalProps {
   onQuestionAdded: () => void // Callback function to inform QuestionNode
   topicID: string
   id: string
+  level: number
 }
 
 const AddModal: React.FC<AddModalProps> = ({
@@ -46,6 +47,7 @@ const AddModal: React.FC<AddModalProps> = ({
   onQuestionAdded,
   topicID,
   id,
+  level,
 }) => {
   const { register, handleSubmit, reset } = useForm<FormData>()
   const [submitting, setSubmitting] = useState(false)
@@ -96,7 +98,9 @@ const AddModal: React.FC<AddModalProps> = ({
   const handleQuestionTextData = (question: string) => {
     setFormData((prevData) => ({
       ...prevData,
-      question: question, // Update options in the form data
+      question: question, // Update question text in the form data
+      questionID: id, // Update id in the form data
+      questionLevel: level, //Update question level in the form data
     }))
   }
 
@@ -104,7 +108,7 @@ const AddModal: React.FC<AddModalProps> = ({
   const handleAnswerTextData = (answer: string) => {
     setFormData((prevData) => ({
       ...prevData,
-      questionAnswer: answer, // Update options in the form data
+      questionAnswer: answer, // Update answer in the form data
     }))
   }
 

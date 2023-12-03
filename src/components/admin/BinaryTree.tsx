@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Flex, Box, Link, Button } from '@chakra-ui/react'
 import QuestionNode from './QuestionNode'
-import { levelIDs } from './data'
+import questionIDs, { getCorrectLevel } from './data'
 
 interface BinaryTreeProps {
   n: number
@@ -16,7 +16,8 @@ const BinaryTree: React.FC<BinaryTreeProps> = ({
 }) => {
   const renderBlocks = (count: number): JSX.Element => {
     const totalBlocks = 2 * n - 1 // Total number of blocks
-    const levelID = levelIDs.slice(0, totalBlocks)
+    const validQuestionIDs = questionIDs.slice(0, totalBlocks)
+    const levelIDs = getCorrectLevel(totalBlocks)
 
     const renderTree = (index: number): JSX.Element => {
       if (index >= totalBlocks) return <></>
@@ -34,7 +35,8 @@ const BinaryTree: React.FC<BinaryTreeProps> = ({
           <QuestionNode
             content={`Question ${index + 1}`}
             topicID={topicID}
-            id={levelID[index]}
+            id={validQuestionIDs[index]}
+            level={levelIDs[index]}
             onQuestionAdded={() => onQuestionAdded(index)} // Pass the callback
           />
 

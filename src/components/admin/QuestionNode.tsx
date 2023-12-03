@@ -7,11 +7,12 @@ interface QuestionNodeProps {
   content: string
   id: string
   topicID: string
+  level: number
 }
 
 const QuestionNode: React.FC<
   QuestionNodeProps & { onQuestionAdded: () => void }
-> = ({ content, id, topicID, onQuestionAdded }) => {
+> = ({ content, id, topicID, onQuestionAdded, level }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [questionAdded, setQuestionAdded] = useState(false)
 
@@ -33,6 +34,7 @@ const QuestionNode: React.FC<
         <Flex flexDirection="column" alignItems="centre">
           <h1>{content}</h1>
           <h2>id {id}</h2>
+          <h2>level {level}</h2>
           {questionAdded ? (
             <Button variant="ghost" disabled>
               Question Added
@@ -46,6 +48,7 @@ const QuestionNode: React.FC<
             onQuestionAdded={handleQuestionAdded}
             topicID={topicID}
             id={id}
+            level={level}
           />
         </Flex>
       </Box>
