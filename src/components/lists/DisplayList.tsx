@@ -1,11 +1,11 @@
 import { List, ListItem, Text } from '@chakra-ui/react'
 import React from 'react'
 
-type CustomListProps = {
+type DisplayListProps = {
   data: string[]
 }
 
-const DisplayList: React.FC<CustomListProps> = ({ data }) => {
+const DisplayList: React.FC<DisplayListProps> = ({ data }) => {
   return (
     <List width="100%" spacing={2}>
       {data.map((option: any, index: number) => (

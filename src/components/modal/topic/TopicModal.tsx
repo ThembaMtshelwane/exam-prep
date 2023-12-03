@@ -111,7 +111,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
           courseCode: module,
           createdAt: serverTimestamp(), // created at == time stamp
           topicID: topicName,
-          // Number of learing concepts
+          // Number of learning concepts
           numberOfLearningObjectives: numOfLOs,
           listOFLearningObjectives: LOList,
         }
@@ -119,7 +119,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
         //- if valid create quiz
         transaction.set(topicsDocRef, quizInfo)
 
-        // create quiz snipet for the user=lecture
+        // create quiz snippet for the user=lecture
         transaction.set(
           doc(firestore, `lecturers/${user?.uid}/quizSnippets`, topicName),
           quizInfo
@@ -164,7 +164,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                 <Input
                   required
                   value={module}
-                  placeholder="ELEN123A"
+                  placeholder="ELEN1234A"
                   size="sm"
                   mb={5}
                   onChange={handleModuleChange}

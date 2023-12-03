@@ -20,6 +20,8 @@ const firestore = getFirestore(app)
 const auth = getAuth(app)
 const storage = getStorage(app)
 
+export { app, firestore, auth, storage }
+
 // Use Firestore emulator if in development environment
 if (process.env.NODE_ENV === 'development') {
   connectFirestoreEmulator(firestore, 'localhost', 8080)
@@ -28,5 +30,3 @@ if (process.env.NODE_ENV === 'development') {
   // If using Firebase Functions emulator, you can also connect it here
   // firebase.functions().useFunctionsEmulator('http://localhost:5001');
 }
-
-export { app, firestore, auth, storage }

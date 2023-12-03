@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 
 import {
-  Button,
   FormControl,
   FormLabel,
   Input,
@@ -20,13 +19,17 @@ import {
 import { firestore } from '@/src/firebase/clientApp'
 import SaveButton from '../buttons/SaveButton'
 import InputList, { AddResources } from '../lists/InputList'
+import UserTextInput from '../input/UserTextInput'
 
 type FormData = {
-  questionText: string
+  question: string
   fileURL: string
-  answer: string
-  options: string[]
-  resourceList: string[]
+  questionAnswer: string
+  questionOptions: string[]
+  questionResources: string[]
+  questionID: string
+  questionLevel: number
+  timestamp: any
 }
 
 interface AddModalProps {
@@ -47,11 +50,14 @@ const AddModal: React.FC<AddModalProps> = ({
   const { register, handleSubmit, reset } = useForm<FormData>()
   const [submitting, setSubmitting] = useState(false)
   const [formData, setFormData] = useState({
-    questionText: '',
+    question: '',
     fileURL: '',
-    answer: '',
-    options: ['', '', '', ''],
-    resourceList: ['', '', '', ''],
+    questionAnswer: '',
+    questionOptions: ['', '', '', ''],
+    questionResources: ['', '', '', ''],
+    questionID: '',
+    questionLevel: 0,
+    timestamp: null,
   })
   const toast = useToast()
 
@@ -59,7 +65,7 @@ const AddModal: React.FC<AddModalProps> = ({
     setSubmitting(true)
 
     try {
-      await setDoc(doc(firestore, `topics/${topicID}/question/${id}/`), {
+      await setDoc(doc(firestore, `topics/${topicID}/questions/${id}/`), {
         ...formData,
         timestamp: serverTimestamp(),
       })
@@ -86,12 +92,27 @@ const AddModal: React.FC<AddModalProps> = ({
     onQuestionAdded() // Inform QuestionNode that a question has been added
     onClose() // Close the modal
   }
+  // Function to receive options data from InputList component
+  const handleQuestionTextData = (question: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      question: question, // Update options in the form data
+    }))
+  }
+
+  // Function to receive options data from InputList component
+  const handleAnswerTextData = (answer: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      questionAnswer: answer, // Update options in the form data
+    }))
+  }
 
   // Function to receive options data from InputList component
   const handleOptionsData = (options: string[]) => {
     setFormData((prevData) => ({
       ...prevData,
-      options: options, // Update options in the form data
+      questionOptions: options, // Update options in the form data
     }))
   }
 
@@ -99,7 +120,7 @@ const AddModal: React.FC<AddModalProps> = ({
   const handleResourcesData = (resourceList: string[]) => {
     setFormData((prevData) => ({
       ...prevData,
-      resourceList: resourceList, // Update resourceList in the form data
+      questionResources: resourceList, // Update resourceList in the form data
     }))
   }
 
@@ -113,20 +134,16 @@ const AddModal: React.FC<AddModalProps> = ({
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack spacing={4} align="flex-start">
               <FormControl>
-                <FormLabel htmlFor="questionText">Question Text:</FormLabel>
-                <Input
-                  id="questionText"
-                  type="text"
-                  {...register('questionText', { required: true })}
+                <UserTextInput
+                  handleTextInputData={handleQuestionTextData}
+                  textLabel="Question"
                 />
               </FormControl>
 
               <FormControl>
-                <FormLabel htmlFor="answer">Answer:</FormLabel>
-                <Input
-                  id="answer"
-                  type="text"
-                  {...register('answer', { required: true })}
+                <UserTextInput
+                  handleTextInputData={handleAnswerTextData}
+                  textLabel="Answer"
                 />
               </FormControl>
 

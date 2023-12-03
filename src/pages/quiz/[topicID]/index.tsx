@@ -21,7 +21,7 @@ const QuizPage: React.FC<QuizPageProps> = ({ topicQuestionData, name }) => {
     handleName()
   })
 
-  console.log(topicQuestionData)
+  console.log('topicQuestionData', topicQuestionData)
 
   return (
     <>

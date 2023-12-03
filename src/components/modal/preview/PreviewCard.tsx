@@ -1,6 +1,6 @@
 import React from 'react'
 import { EditButton } from '../../buttons/EditButton'
-import CustomList from '../../lists/DisplayList'
+import DisplayList from '../../lists/DisplayList'
 import { Box, Text, Image } from '@chakra-ui/react'
 
 type previewProps = {
@@ -25,8 +25,8 @@ const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
       <Image src={fileURL} alt="" />
       <Text>Answer: {questionAnswer}</Text>
       <Text>Options:</Text>
-      <CustomList data={questionOptions} />
-      <CustomList data={questionResources} />
+      <DisplayList data={questionOptions} />
+      <DisplayList data={questionResources} />
       <br />
       <EditButton questionID={questionID} name={name} fileURL={fileURL} />
     </Box>
