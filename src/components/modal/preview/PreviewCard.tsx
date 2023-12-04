@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, createContext } from 'react'
 import { EditButton } from '../../buttons/EditButton'
 import DisplayList from '../../lists/DisplayList'
 import { Box, Text, Image } from '@chakra-ui/react'
@@ -9,6 +9,9 @@ type previewProps = {
 }
 
 const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
+  const [questionPreviewData, setQuestionPreview] = useState<any>({
+    ...questionPreview,
+  })
   const {
     questionID,
     fileURL,
@@ -16,7 +19,14 @@ const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
     questionAnswer,
     questionOptions,
     questionResources,
-  } = questionPreview
+    questionLevel,
+  } = questionPreviewData
+
+  // Function to update questionPreview in the parent component
+  const updateQuestionPreview = (updatedData: any) => {
+    // Update questionPreview state with the updatedData
+    setQuestionPreview(updatedData)
+  }
 
   return (
     <Box boxShadow="1px 1px 3px 2px rgba(97, 143, 217, .25)" m={2} p={5}>
@@ -24,11 +34,17 @@ const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
       <Text>Question: {question}</Text>
       <Image src={fileURL} alt="" />
       <Text>Answer: {questionAnswer}</Text>
-      <Text>Options:</Text>
+      <Text>Level:{questionLevel}</Text>
       <DisplayList data={questionOptions} />
-      <DisplayList data={questionResources} />
+      {/* <DisplayList data={questionResources} /> */}
       <br />
-      <EditButton questionID={questionID} name={name} fileURL={fileURL} />
+      <EditButton
+        questionID={questionID}
+        name={name}
+        level={questionLevel}
+        questionPreview={questionPreview}
+        updateQuestionPreview={updateQuestionPreview}
+      />
     </Box>
   )
 }

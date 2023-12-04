@@ -5,6 +5,7 @@ type customInputProps = {
   handleInputFunction: any
   placeholder: string
   isRequired: boolean
+  value: string
 }
 
 const CustomInput: React.FC<customInputProps> = ({
@@ -12,6 +13,7 @@ const CustomInput: React.FC<customInputProps> = ({
   handleInputFunction,
   placeholder,
   isRequired,
+  value,
 }) => {
   return (
     <>
@@ -23,6 +25,7 @@ const CustomInput: React.FC<customInputProps> = ({
           required
           name={name}
           onChange={handleInputFunction}
+          value={value}
         ></Input>
       ) : (
         <Input
@@ -31,6 +34,7 @@ const CustomInput: React.FC<customInputProps> = ({
           placeholder={placeholder}
           name={name}
           onChange={handleInputFunction}
+          value={value}
         ></Input>
       )}
     </>

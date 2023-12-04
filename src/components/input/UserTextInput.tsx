@@ -1,28 +1,30 @@
-import React, { ChangeEvent, useState } from 'react'
-import { Input, Text } from '@chakra-ui/react'
+import React from 'react'
+import { Input } from '@chakra-ui/react'
 
 type UserTextInputProps = {
   handleTextInputData: (text: string) => void
   textLabel: string
+  value: string // Add value prop
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void // Add handleChange prop
+  name: string
 }
 const UserTextInput: React.FC<UserTextInputProps> = ({
   handleTextInputData,
   textLabel,
+  value,
+  handleChange,
+  name,
 }) => {
-  const [textData, setTextData] = useState<string>('')
-
-  const handleText = (event: ChangeEvent<HTMLInputElement>) => {
-    const updatedText = event.target.value
-    setTextData(updatedText)
-    handleTextInputData(updatedText) // Sending updated text back to parent component
-  }
-
   return (
     <div>
-      <Text fontWeight={600} fontSize={15}>
-        {textLabel}
-        <Input name={textLabel} required onChange={handleText} />
-      </Text>
+      <label>{textLabel}</label>
+      <Input
+        type="text"
+        value={value}
+        onChange={handleChange}
+        onBlur={(e) => handleTextInputData(e.target.value)}
+        name={name}
+      />
     </div>
   )
 }

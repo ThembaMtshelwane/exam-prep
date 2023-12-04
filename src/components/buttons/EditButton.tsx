@@ -5,13 +5,17 @@ import EditModal from '../modal/preview/EditModal'
 type editProps = {
   questionID: string
   name: string
-  fileURL: any
+  level: number
+  questionPreview: any
+  updateQuestionPreview: (updatedData: any) => void
 }
 
 export const EditButton: React.FC<editProps> = ({
   questionID,
   name,
-  fileURL,
+  level,
+  questionPreview,
+  updateQuestionPreview,
 }) => {
   const [open, setOpen] = useState(false)
   return (
@@ -19,9 +23,11 @@ export const EditButton: React.FC<editProps> = ({
       <EditModal
         qid={questionID}
         name={name}
-        fileURL={fileURL}
         open={open}
         handleClose={() => setOpen(false)}
+        level={level}
+        questionPreview={questionPreview}
+        updateQuestionPreview={updateQuestionPreview}
       />
       <Button
         fontSize={20}

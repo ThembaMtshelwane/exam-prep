@@ -22,11 +22,11 @@ const storage = getStorage(app)
 
 export { app, firestore, auth, storage }
 
-// Use Firestore emulator if in development environment
-if (process.env.NODE_ENV === 'development') {
-  connectFirestoreEmulator(firestore, 'localhost', 8080)
-  connectAuthEmulator(auth, 'http://localhost:9099') // Emulator Auth URL
-  connectStorageEmulator(storage, 'localhost', 9199) // Emulator Storage URL
-  // If using Firebase Functions emulator, you can also connect it here
-  // firebase.functions().useFunctionsEmulator('http://localhost:5001');
-}
+// // Use Firestore emulator if in development environment
+// if (process.env.NODE_ENV === 'development') {
+//   connectFirestoreEmulator(firestore, 'localhost', 8080)
+//   connectAuthEmulator(auth, 'http://localhost:9099') // Emulator Auth URL
+//   connectStorageEmulator(storage, 'localhost', 9199) // Emulator Storage URL
+//   // If using Firebase Functions emulator, you can also connect it here
+//   // firebase.functions().useFunctionsEmulator('http://localhost:5001');
+// }
