@@ -1,7 +1,7 @@
 import React, { useState, createContext } from 'react'
 import { EditButton } from '../../buttons/EditButton'
 import DisplayList from '../../lists/DisplayList'
-import { Box, Text, Image } from '@chakra-ui/react'
+import { Box, Text, Image, Flex } from '@chakra-ui/react'
 
 type previewProps = {
   questionPreview: any
@@ -32,7 +32,20 @@ const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
     <Box boxShadow="1px 1px 3px 2px rgba(97, 143, 217, .25)" m={2} p={5}>
       <Text>Question ID: {questionID}</Text>
       <Text>Question: {question}</Text>
-      <Image src={fileURL} alt="" />
+      {fileURL ? (
+        <Flex justifyContent="center" p="2rem">
+          <Image
+            src={fileURL}
+            alt={questionID}
+            width="50%"
+            height="50% "
+            align="center"
+          />
+        </Flex>
+      ) : (
+        ''
+      )}
+
       <Text>Answer: {questionAnswer}</Text>
       <Text>Level:{questionLevel}</Text>
       <DisplayList data={questionOptions} />

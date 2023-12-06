@@ -52,11 +52,11 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
     if (value.length < 3 || value.length > 20) {
       setError('Topic name should be between 3 and 20 characters')
       setIsValidQuiz(false)
-    } else if (!/^[a-zA-Z]+$/.test(value)) {
-      setError('Topic name should only contain letters')
-      setIsValidQuiz(false)
     } else if (/\s/.test(value)) {
       setError('Topic name should not contain spaces')
+      setIsValidQuiz(false)
+    } else if (!/^[a-zA-Z]+$/.test(value)) {
+      setError('Topic name should only contain letters')
       setIsValidQuiz(false)
     } else {
       setError('')
@@ -68,6 +68,10 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
   const handleModuleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     setModule(value)
+    // if (/\s/.test(value)) {
+    //   setError('Module should not contain spaces')
+    //   setIsValidQuiz(false)
+    // }
     module_Name = module
   }
 
@@ -159,7 +163,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
             >
               <form onSubmit={handleCreateQuiz}>
                 <Text fontWeight={600} fontSize={15}>
-                  Course code
+                  Course code:
                 </Text>
                 <Input
                   required
@@ -171,25 +175,24 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                 />
 
                 <Text fontWeight={600} fontSize={15}>
-                  Topic Name
+                  Topic Name:
                 </Text>
                 <Input
                   value={topicName}
-                  placeholder="GeneralKnowledge85"
+                  placeholder="GeneralKnowledge"
                   size="sm"
-                  mb={5}
                   onChange={handleChange1}
                   required
                 ></Input>
 
-                <Text fontSize="9pt" color="red">
+                <Text fontSize="10pt" color="red" mb={3}>
                   {error}
                 </Text>
 
                 <Text fontWeight={600} fontSize={15}>
-                  Number of Learning Objectives (maximum of 8)
+                  Number of Learning Objectives:
                 </Text>
-                <Text fontWeight={600} fontSize={10}>
+                <Text fontWeight={600} fontSize="10pt">
                   Minimum of 4 and maximum of 8
                 </Text>
                 <Input
@@ -199,9 +202,12 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                   onChange={handleChange2}
                   required
                 />
+                <Text fontWeight={600} fontSize={15} mt={3} color="#265e9e">
+                  Expected number of questions: {2 * numOfLOs - 1}
+                </Text>
 
-                <Text fontWeight={600} fontSize={15} mt={5}>
-                  Enter Learning Objectives
+                <Text fontWeight={600} fontSize={15} mt={3}>
+                  Enter Learning Objectives:
                 </Text>
                 <Flex flexDirection="column">
                   {numOfLOs < MIN_LEARNING_OBJECTIVES &&

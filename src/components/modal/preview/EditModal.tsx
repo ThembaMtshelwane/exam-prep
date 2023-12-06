@@ -10,6 +10,7 @@ type EditModalProps = {
   level: number
   questionPreview: any
   updateQuestionPreview: (updatedData: any) => void
+  updateImageDataInPreview: (newImageData: string) => void
 }
 
 const EditModal: React.FC<EditModalProps> = ({
@@ -20,6 +21,7 @@ const EditModal: React.FC<EditModalProps> = ({
   level,
   questionPreview,
   updateQuestionPreview,
+  updateImageDataInPreview,
 }) => {
   return (
     <CustomModal

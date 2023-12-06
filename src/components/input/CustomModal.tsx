@@ -41,8 +41,8 @@ type CustomModalProps = {
   id: string
   level: number
   onQuestionAdded?: () => void
-  questionPreview: any
-  updateQuestionPreview: (updatedData: any) => void
+  questionPreview?: any
+  updateQuestionPreview?: (updatedData: any) => void
 }
 
 const CustomModal: React.FC<CustomModalProps> = ({
@@ -57,18 +57,23 @@ const CustomModal: React.FC<CustomModalProps> = ({
   updateQuestionPreview,
 }) => {
   const { register, handleSubmit, reset } = useForm<FormData>()
+  if (questionPreview === undefined) {
+  }
   const [formData, setFormData] = useState({
-    question: questionPreview.question,
-    fileURL: questionPreview.fileURL,
-    questionAnswer: questionPreview.questionAnswer,
-    questionOptions: questionPreview.questionOptions,
-    questionResources: questionPreview.questionResources,
-    questionID: questionPreview.questionID,
-    questionLevel: questionPreview.questionLevel,
+    question: questionPreview ? questionPreview.question || '' : '',
+    fileURL: questionPreview ? questionPreview.fileURL : null,
+    questionAnswer: questionPreview ? questionPreview.questionAnswer || '' : '',
+    questionOptions: questionPreview ? questionPreview.questionOptions : [],
+    questionResources: questionPreview ? questionPreview.questionResources : [],
+    questionID: questionPreview ? questionPreview.questionID : '',
+    questionLevel: questionPreview ? questionPreview.questionLevel || 0 : 0,
     timestamp: null,
   })
   const [submitting, setSubmitting] = useState(false)
   const toast = useToast()
+  const [imageData, setImageData] = useState<string>(
+    questionPreview ? questionPreview.fileURL : null
+  )
 
   // Update form fields with formData on mount or when questionPreview changes
   useEffect(() => {
@@ -101,7 +106,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
           timestamp: serverTimestamp(),
         })
       }
-      updateQuestionPreview(formData)
+      if (updateQuestionPreview) {
+        updateQuestionPreview(formData)
+      }
       reset() // Clear form fields after successful submission
       toast({
         title: 'Form submitted successfully!',
@@ -136,18 +143,27 @@ const CustomModal: React.FC<CustomModalProps> = ({
     }))
   }
 
-  // Function to receive options data from InputList component
-  const handleAnswerTextData = (answer: string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      questionAnswer: answer, // Update answer in the form data
-    }))
+  // Function to update image data in PreviewCard
+  const updateImageDataInPreview = (newImageData: string) => {
+    if (updateQuestionPreview) {
+      setImageData(newImageData)
+      updateQuestionPreview({ ...formData, fileURL: newImageData }) // Update the questionPreview with the new image URL
+    }
   }
-  // Function to receive options data from InputList component
+
+  // Function to receive fileURL data from ImageInput component
   const handleImageData = (fileURL: string) => {
     setFormData((prevData) => ({
       ...prevData,
       fileURL: fileURL, // Update answer in the form data
+    }))
+  }
+
+  // Function to receive answer text from UserTextInput component
+  const handleAnswerTextData = (answer: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      questionAnswer: answer, // Update answer in the form data
     }))
   }
   // Function to receive options data from InputList component
@@ -187,9 +203,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
               <FormControl>
                 <ImageInput
-                  handleImageData={handleImageData}
                   qid={formData.questionID}
                   name={topicID}
+                  updateImageDataInPreview={updateImageDataInPreview}
+                  handleImageData={handleImageData}
                 />
               </FormControl>
 
@@ -206,7 +223,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
               <FormControl>
                 <AddOptionsList
                   handleOptionsData={handleOptionsData}
-                  initialOptions={formData.questionOptions}
+                  initialOptions={
+                    formData.questionOptions
+                      ? formData.questionOptions
+                      : ['', '', '', '']
+                  }
                 />
               </FormControl>
 
