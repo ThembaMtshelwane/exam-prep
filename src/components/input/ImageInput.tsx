@@ -1,5 +1,5 @@
 import { storage } from '@/src/firebase/clientApp'
-import { Button, Image } from '@chakra-ui/react'
+import { Button, Image, Spinner } from '@chakra-ui/react'
 import {
   ref,
   uploadBytes,
@@ -90,10 +90,20 @@ const ImageInput: React.FC<ImageInputProps> = ({
               }
             }}
           />
-          <Button onClick={uploadFile}>
-            {fileLink ? 'Replace' : 'Upload'}
+          <Button onClick={uploadFile} isLoading={isLoading}>
+            {isLoading ? (
+              <Spinner size="sm" color="white" />
+            ) : fileLink ? (
+              'Replace'
+            ) : (
+              'Upload'
+            )}
           </Button>
-          {fileLink && <Button onClick={removeFile}>Remove</Button>}
+          {fileLink && (
+            <Button onClick={removeFile} isLoading={isLoading}>
+              {isLoading ? <Spinner size="sm" color="white" /> : 'Remove'}
+            </Button>
+          )}
         </>
       ) : (
         ''
