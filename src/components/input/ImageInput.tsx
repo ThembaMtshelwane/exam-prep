@@ -1,5 +1,5 @@
 import { storage } from '@/src/firebase/clientApp'
-import { Button, Image, Spinner } from '@chakra-ui/react'
+import { Button, Image, Spinner, Text } from '@chakra-ui/react'
 import {
   ref,
   uploadBytes,
@@ -24,16 +24,24 @@ const ImageInput: React.FC<ImageInputProps> = ({
   const [isEditImage, setIsEditImage] = useState<boolean>(false)
   const [fileUpload, setFileUpload] = useState<File | null>(null)
   const [fileLink, setFileLink] = useState<string>('')
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [isSuccessful, setIsSuccessful] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const uploadFile = () => {
     setIsLoading(true)
-    if (fileUpload === null) return
+
+    if (fileUpload === null) {
+      setErrorMessage('No file chosen')
+      setIsLoading(false)
+      return
+    }
 
     const fileRef = ref(storage, `questionFiles/${name}/${qid}`)
     uploadBytes(fileRef, fileUpload)
       .then(() => {
-        alert('File uploaded')
+        setErrorMessage('File uploaded')
+        setIsSuccessful(true)
         getDownloadURL(fileRef).then((url) => {
           setFileLink(url.toString())
           handleImageData(url.toString()) // Update image URL in CustomModal
@@ -41,8 +49,8 @@ const ImageInput: React.FC<ImageInputProps> = ({
         })
       })
       .catch((error) => {
-        alert('Error uploading file')
-        console.error(error)
+        setErrorMessage(error.message)
+        setIsSuccessful(false)
       })
     setIsLoading(false)
   }
@@ -53,14 +61,16 @@ const ImageInput: React.FC<ImageInputProps> = ({
     const fileRef = ref(storage, `questionFiles/${name}/${qid}`)
     deleteObject(fileRef)
       .then(() => {
-        alert('File deleted')
+        setErrorMessage('File deleted')
+        setIsSuccessful(true)
         setFileLink('')
         setFileLink('')
         handleImageData('') // Update image URL in CustomModal
         updateImageDataInPreview('') // Update image URL in PreviewCard
       })
       .catch((error) => {
-        alert('Error deleting file')
+        setErrorMessage('Error deleting file')
+        setIsSuccessful(false)
         console.error(error)
       })
     setIsLoading(false)
@@ -103,6 +113,11 @@ const ImageInput: React.FC<ImageInputProps> = ({
             <Button onClick={removeFile} isLoading={isLoading}>
               {isLoading ? <Spinner size="sm" color="white" /> : 'Remove'}
             </Button>
+          )}
+          {isSuccessful ? (
+            <Text color="green">{errorMessage} </Text>
+          ) : (
+            <Text color="red">{errorMessage} </Text>
           )}
         </>
       ) : (

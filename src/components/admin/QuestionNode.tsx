@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
-import { Button, Flex, Box } from '@chakra-ui/react'
+import React, { useContext, useState } from 'react'
+import { Flex, Box } from '@chakra-ui/react'
 import AddButton from '../buttons/AddButton'
 import AddModal from './AddModal'
+import { EditButton } from '../buttons/EditButton'
+
 
 interface QuestionNodeProps {
   content: string
@@ -36,9 +38,11 @@ const QuestionNode: React.FC<
           <h2>id {id}</h2>
           <h2>level {level}</h2>
           {questionAdded ? (
-            <Button variant="ghost" disabled>
-              Question Added
-            </Button>
+            <EditButton
+              questionID={id}
+              name={topicID}
+              level={level}
+            />
           ) : (
             <AddButton onClick={openAddModal} disabled={questionAdded} />
           )}

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Flex, Box, Link, Button } from '@chakra-ui/react'
+import React from 'react'
+import { Flex, Box, } from '@chakra-ui/react'
 import QuestionNode from './QuestionNode'
 import questionIDs, { getCorrectLevel } from './data'
 

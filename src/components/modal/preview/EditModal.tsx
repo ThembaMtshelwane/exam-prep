@@ -8,8 +8,8 @@ type EditModalProps = {
   open: boolean
   handleClose: () => void
   level: number
-  questionPreview: any
-  updateQuestionPreview: (updatedData: any) => void
+  questionPreview?: any
+  updateQuestionPreview?: (updatedData: any) => void
   // updateImageDataInPreview: (newImageData: string) => void
 }
 

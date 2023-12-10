@@ -6,8 +6,8 @@ type editProps = {
   questionID: string
   name: string
   level: number
-  questionPreview: any
-  updateQuestionPreview: (updatedData: any) => void
+  questionPreview?: any
+  updateQuestionPreview?: (updatedData: any) => void
 }
 
 export const EditButton: React.FC<editProps> = ({
