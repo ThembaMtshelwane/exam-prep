@@ -44,7 +44,7 @@ const LectureDataProvider: React.FC<LectureDataProviderProps> = (props) => {
         // Handle error if needed
       }
     }
-
+    fetchData()
     if (!lectureData.length) {
       const cachedData = localStorage.getItem('lectureData')
       if (cachedData) {

@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '@/src/firebase/clientApp'
 import { getLectureData } from '../../pages/api/LectureData'

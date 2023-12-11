@@ -39,6 +39,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ topicID, numOfLOs }) => {
             buttonName={'Save Quiz'}
           />
         )}
+        <BasicButton routeName={`/dashboard`} buttonName={'Back'} />
       </form>
     </div>
   )

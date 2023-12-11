@@ -77,13 +77,12 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
 
   const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
-    setError('')
-    setNumOfLOs(Number(value))
-
     if (!/^[0-9]+$/.test(value)) {
       setError('Learning Objectives must be 4 or 8')
       setIsValidQuiz(false)
+      setNumOfLOs(0)
     } else {
+      setNumOfLOs(Number(value))
       setError('')
       setIsValidQuiz(true)
     }
@@ -213,7 +212,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                   {numOfLOs < MIN_LEARNING_OBJECTIVES &&
                   numOfLOs > MAX_LEARNING_OBJECTIVES
                     ? 'Invalid Leaning Objectives'
-                    : Array(+Number(numOfLOs))
+                    : Array(+numOfLOs)
                         .fill('')
                         .map((n, i) => {
                           return (

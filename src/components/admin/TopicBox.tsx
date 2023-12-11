@@ -1,5 +1,9 @@
+import { auth, firestore } from '@/src/firebase/clientApp'
 import { Box, Button, Flex, Text } from '@chakra-ui/react'
-import React from 'react'
+import { deleteDoc, doc } from 'firebase/firestore'
+import React, { useState } from 'react'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { useLectureDataContext } from './LectureDataProvider'
 
 type TopicBoxProps = {
   topicURL: string
@@ -16,6 +20,41 @@ const TopicBox: React.FC<TopicBoxProps> = ({
   numOfLOs,
   timeOfCreation,
 }) => {
+  const [user] = useAuthState(auth)
+  const [isLoading, setIsLoading] = useState(false)
+  const { lectureData, setLectureData } = useLectureDataContext()
+
+  const deleteTopic = async (topicName: string) => {
+    setIsLoading(true)
+    try {
+      // Reference to the document under /lecturers/document/quizSnippets
+      const quizSnippetDocRef = doc(
+        firestore,
+        `lecturers/${user?.uid}/quizSnippets`,
+        topicName
+      )
+
+      // Reference to the document under /topics
+      const topicDocRef = doc(firestore, 'topics', topicName)
+
+      // Delete documents
+      await deleteDoc(quizSnippetDocRef)
+      await deleteDoc(topicDocRef)
+
+      // Remove the deleted topic from the cached lecture data
+      const updatedLectureData = lectureData.filter(
+        (topic) => topic.topicName !== topicName
+      )
+      setLectureData(updatedLectureData)
+
+      console.log(`Topic '${topicName}' deleted successfully.`)
+    } catch (error) {
+      console.error('Error deleting topic:', error)
+      // Handle error here
+    }
+    setIsLoading(false)
+  }
+
   return (
     <div>
       <Box
@@ -66,6 +105,8 @@ const TopicBox: React.FC<TopicBoxProps> = ({
                 color: '#265e9e',
                 transform: 'scale(0.98)',
               }}
+              isLoading={isLoading}
+              onClick={() => deleteTopic(topicName)}
             >
               Delete
             </Button>

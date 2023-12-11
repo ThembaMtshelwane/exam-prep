@@ -9,7 +9,6 @@ type BasicButtonProps = {
 const BasicButton: React.FC<BasicButtonProps> = ({ routeName, buttonName }) => {
   return (
     <div>
-      {' '}
       <Link href={routeName}>
         <Button
           color="black"
