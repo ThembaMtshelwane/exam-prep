@@ -36,9 +36,9 @@ const levelID8 = [...levelID7, 4, 4]
 export const getCorrectLevel = (num: number) => {
   if (num === levelID2.length) return levelID2
   if (num === levelID4.length) return levelID4
+  if (num === levelID5.length) return levelID5
   if (num === levelID6.length) return levelID6
   if (num === levelID7.length) return levelID7
   if (num === levelID8.length) return levelID8
-  if (num === levelID5.length) return levelID5
   return [1]
 }

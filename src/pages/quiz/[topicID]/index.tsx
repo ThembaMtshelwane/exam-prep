@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from 'next'
 import React, { useEffect, useState } from 'react'
 import { getQuestion } from '../../api/QuestionData'
-import { Box, ListItem, Stack, List, Heading } from '@chakra-ui/react'
+import { Box, ListItem, Stack, List, Heading, Flex } from '@chakra-ui/react'
 import PageContent from '@/src/components/layout/PageContent'
 import BasicButton from '@/src/components/buttons/BasicButton'
 import PreviewCard from '@/src/components/modal/preview/PreviewCard'
@@ -20,8 +20,6 @@ const QuizPage: React.FC<QuizPageProps> = ({ topicQuestionData, name }) => {
     }
     handleName()
   })
-
-  console.log('topicQuestionData', topicQuestionData)
 
   return (
     <>

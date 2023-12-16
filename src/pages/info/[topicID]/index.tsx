@@ -18,10 +18,12 @@ import { DownloadTableExcel } from 'react-export-table-to-excel'
 
 import { getAllUsers } from '../../api/UserData'
 import PageContent from '@/src/components/layout/PageContent'
+import BasicButton from '@/src/components/buttons/BasicButton'
 
 type StudentResult = {
   email: string
   outcome: string
+  problemArea: string[]
 }
 
 type QuizPageProps = {
@@ -32,7 +34,7 @@ type QuizPageProps = {
 
 type HistoryEntry = {
   studentID: string
-  results: { result: string }[]
+  results: { result: string; loText: string }[]
 }
 
 const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
@@ -45,20 +47,29 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
 
   useEffect(() => {
     if (quizHistory.length != 0) {
-      const newStudentResults = quizHistory.map((history: HistoryEntry) => {
-        const correctCount = history.results.filter(
-          (outcome: { result: string }) => outcome.result === 'correct'
-        ).length
-        const percentage = (
-          (correctCount / (history.results.length - 1)) *
-          100
-        ).toFixed(2)
-        return { email: history.studentID, outcome: percentage }
-      })
+      const newStudentResults = quizHistory.map(
+        (history: HistoryEntry, index: number) => {
+          const correctCount = history.results.filter(
+            (outcome: { result: string }) => outcome.result === 'correct'
+          ).length
+          const percentage = (
+            (correctCount / (history.results.length - 1)) *
+            100
+          ).toFixed(2)
+          const problemAreas = history.results.map((result) => result.loText)
+          return {
+            email: history.studentID,
+            outcome: percentage,
+            problemArea: problemAreas,
+          }
+        }
+      )
       setStudentResults(newStudentResults)
       setShow(true)
     }
   }, [])
+
+  console.log('problem areas', studentResults)
 
   return (
     <>
@@ -118,6 +129,7 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
                     <Tr>
                       <Th>Student Email</Th>
                       <Th>Results %</Th>
+                      <Th>Problem Area/s</Th>
                     </Tr>
                   </Thead>
 
@@ -127,30 +139,14 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
                         <Tr key={studentData.email}>
                           <Td>{studentData.email}</Td>
                           <Td>{studentData.outcome}</Td>
+                          <Td>{studentData.problemArea.join(', ')}</Td>
                         </Tr>
                       ))}
                   </Tbody>
                 </Table>
               </TableContainer>
 
-              <Link href="/dashboard">
-                <Button
-                  color="black"
-                  border="2px solid #265e9e"
-                  width="100%"
-                  _active={{
-                    transform: 'scale(0.98)',
-                  }}
-                  _focus={{
-                    boxShadow:
-                      '0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
-                    bg: ' #618fd9',
-                    color: 'white',
-                  }}
-                >
-                  Back
-                </Button>
-              </Link>
+              <BasicButton routeName="/dashboard" buttonName="Back" />
             </Box>
           ) : (
             <Box>

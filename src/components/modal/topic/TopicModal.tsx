@@ -78,7 +78,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
   const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     if (!/^[0-9]+$/.test(value)) {
-      setError('Learning Objectives must be 4 or 8')
+      setError('Enter a number')
       setIsValidQuiz(false)
       setNumOfLOs(0)
     } else {
@@ -203,10 +203,6 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                 />
                 <Text fontWeight={600} fontSize={15} mt={3} color="#265e9e">
                   Expected number of questions: {2 * numOfLOs - 1}
-                </Text>
-
-                <Text fontWeight={600} fontSize={15} mt={3}>
-                  Enter Learning Objectives:
                 </Text>
                 <Flex flexDirection="column">
                   {numOfLOs < MIN_LEARNING_OBJECTIVES &&

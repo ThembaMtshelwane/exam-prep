@@ -53,7 +53,7 @@ const LectureDataProvider: React.FC<LectureDataProviderProps> = (props) => {
         fetchData()
       }
     }
-  }, [])
+  })
 
   const setLectureData: Dispatch<SetStateAction<any[]>> = (
     data: SetStateAction<any[]>

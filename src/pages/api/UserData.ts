@@ -22,13 +22,13 @@ export const getAllUsers = async (context: GetServerSidePropsContext) => {
       collection(firestore, quizHistoryCollectionRef)
     ) // get the quiz snippets  collection from database
     let quizHistory: any[] = []
-    // store all quiz history from the database into the quizHistoru array
+    // store all quiz history from the database into the quizHistory array
     quizHistoryFromDB.forEach((doc) => {
       quizHistory.push({ ...doc.data() })
     })
 
     return {
-      //This will make sure the topics are available gloabally
+      //This will make sure the topics are available globally
       props: {
         userData:
           allUsers.length !== 0 ? JSON.parse(safeJsonStringify(allUsers)) : '',

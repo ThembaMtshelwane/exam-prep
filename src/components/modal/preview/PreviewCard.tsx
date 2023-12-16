@@ -2,6 +2,7 @@ import React, { useState, createContext } from 'react'
 import { EditButton } from '../../buttons/EditButton'
 import DisplayList from '../../lists/DisplayList'
 import { Box, Text, Image, Flex } from '@chakra-ui/react'
+import { AddResourcesList } from '../../lists/AddResourcesList'
 
 type previewProps = {
   questionPreview: any
@@ -20,6 +21,7 @@ const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
     questionOptions,
     questionResources,
     questionLevel,
+    questionLearningObjectives,
   } = questionPreviewData
 
   // Function to update questionPreview in the parent component
@@ -48,8 +50,13 @@ const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
 
       <Text>Answer: {questionAnswer}</Text>
       <Text>Level:{questionLevel}</Text>
-      <DisplayList data={questionOptions} />
-      {/* <DisplayList data={questionResources} /> */}
+      <Text>Learning Objective/s:{questionLearningObjectives}</Text>
+      <DisplayList data={questionOptions} heading={'Options'} />
+      {questionResources ? (
+        <DisplayList data={questionResources} heading={'Resources'} />
+      ) : (
+        ''
+      )}
       <br />
       <EditButton
         questionID={questionID}

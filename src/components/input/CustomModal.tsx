@@ -23,6 +23,7 @@ import ImageInput from './ImageInput'
 import UserTextInput from './UserTextInput'
 
 type FormData = {
+  questionLearningObjectives: string
   question: string
   fileURL: string
   questionAnswer: string
@@ -60,6 +61,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
   if (questionPreview === undefined) {
   }
   const [formData, setFormData] = useState({
+    questionLearningObjectives: questionPreview
+      ? questionPreview.questionLearningObjectives || ''
+      : '',
     question: questionPreview ? questionPreview.question || '' : '',
     fileURL: questionPreview ? questionPreview.fileURL : null,
     questionAnswer: questionPreview ? questionPreview.questionAnswer || '' : '',
@@ -133,6 +137,14 @@ const CustomModal: React.FC<CustomModalProps> = ({
     }
     onClose() // Close the modal
   }
+
+  // Function to receive lo text from UserTextInput component
+  const handleLOTextData = (loText: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      questionLearningObjectives: loText, // Update answer in the form data
+    }))
+  }
   // Function to receive options data from InputList component
   const handleQuestionTextData = (question: string) => {
     setFormData((prevData) => ({
@@ -193,6 +205,15 @@ const CustomModal: React.FC<CustomModalProps> = ({
             <VStack spacing={4} align="flex-start">
               <FormControl>
                 <UserTextInput
+                  handleTextInputData={handleLOTextData}
+                  textLabel="Learning Objective/s"
+                  value={formData.questionLearningObjectives}
+                  handleChange={handleChange}
+                  name="questionLearningObjectives" // Pass the name of the input field
+                />
+              </FormControl>
+              <FormControl>
+                <UserTextInput
                   handleTextInputData={handleQuestionTextData}
                   textLabel="Question"
                   value={formData.question}
@@ -232,10 +253,15 @@ const CustomModal: React.FC<CustomModalProps> = ({
               </FormControl>
 
               <FormControl>
-                {/* <AddResourcesList
+                <AddResourcesList
                   handleResourcesData={handleResourcesData}
-                  // initialOptions={formData.questionOptions}
-                /> */}
+                  value={
+                    formData.questionResources ? formData.questionResources : ''
+                  }
+                  num={
+                    formData.questionResources ? formData.questionResources.length : 0
+                  }
+                />
               </FormControl>
 
               <SaveButton loading={submitting} />

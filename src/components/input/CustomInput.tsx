@@ -4,7 +4,7 @@ type customInputProps = {
   name: string
   handleInputFunction: any
   placeholder: string
-  isRequired: boolean
+  isRequired?: boolean
   value: string
 }
 
