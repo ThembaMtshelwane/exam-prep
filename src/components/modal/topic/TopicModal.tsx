@@ -39,6 +39,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
   const [module, setModule] = useState('')
   const [numOfLOs, setNumOfLOs] = useState(4)
   const [error, setError] = useState('')
+  const [numLoError, setNumLoError] = useState('')
   const [LOList, setLOList] = useState([])
   const [loading, setLoading] = useState(false)
   const [isValidQuiz, setIsValidQuiz] = useState(false)
@@ -78,12 +79,18 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
   const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     if (!/^[0-9]+$/.test(value)) {
-      setError('Enter a number')
+      setNumLoError('Enter a number')
       setIsValidQuiz(false)
+      setNumOfLOs(0)
+    } else if (
+      Number(value) > MAX_LEARNING_OBJECTIVES ||
+      Number(value) < MIN_LEARNING_OBJECTIVES
+    ) {
+      setNumLoError(' Minimum of 4 and maximum of 8')
       setNumOfLOs(0)
     } else {
       setNumOfLOs(Number(value))
-      setError('')
+      setNumLoError('')
       setIsValidQuiz(true)
     }
   }
@@ -191,8 +198,8 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                 <Text fontWeight={600} fontSize={15}>
                   Number of Learning Objectives:
                 </Text>
-                <Text fontWeight={600} fontSize="10pt">
-                  Minimum of 4 and maximum of 8
+                <Text fontSize="10pt" color="red" mb={3}>
+                  {numLoError}
                 </Text>
                 <Input
                   value={numOfLOs}
