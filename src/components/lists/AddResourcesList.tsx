@@ -20,22 +20,22 @@ export const AddResourcesList: React.FC<addResourcesListProps> = ({
   const [error, setError] = useState('')
   const MAX_RESOURCES: number = 4
 
-  // const [resources, setResources] = useState<ResourceData>({
-  //   resource1: '',
-  //   resource2: '',
-  //   resource3: '',
-  //   resource4: '',
-  // })
-  const [resources, setResources] = useState<string[]>(
-    Array.from({ length: num }, () => '')
-  )
+  const [resources, setResources] = useState<ResourceData>({
+    resource1: '',
+    resource2: '',
+    resource3: '',
+    resource4: '',
+  })
+  // const [resources, setResources] = useState<string[]>(
+  //   Array.from({ length: num }, () => '')
+  // )
   const handleResourceChange =
     (key: string) => (event: ChangeEvent<HTMLInputElement>) => {
       const updatedResources = { ...resources, [key]: event.target.value }
       setResources(updatedResources)
-      handleResourcesData(updatedResources)
-      // const updatedResourceList = Object.values(updatedResources)
-      // handleResourcesData(updatedResourceList) // Sending updated resources back to parent component
+      // handleResourcesData(updatedResources)
+      const updatedResourceList = Object.values(updatedResources)
+      handleResourcesData(updatedResourceList) // Sending updated resources back to parent component
     }
 
   const handleNumOfResources = (event: React.ChangeEvent<HTMLInputElement>) => {
