@@ -11,7 +11,7 @@ const BackToDashboard: React.FC<BackToDashboardProps> = () => {
         <Button
           color="black"
           border="2px solid #265e9e"
-          width="100%"
+          // width="50%"
           _active={{
             transform: 'scale(0.98)',
           }}

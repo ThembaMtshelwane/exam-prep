@@ -19,6 +19,7 @@ import { DownloadTableExcel } from 'react-export-table-to-excel'
 import { getAllUsers } from '../../api/UserData'
 import PageContent from '@/src/components/layout/PageContent'
 import BasicButton from '@/src/components/buttons/BasicButton'
+import DownloadButton from '@/src/components/buttons/DownloadButton'
 
 type StudentResult = {
   email: string
@@ -79,49 +80,14 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
             Student Information for {name} Quiz
           </Heading>
 
-          <Link href="/dashboard">
-            <Button
-              color="black"
-              border="2px solid #265e9e"
-              width="100%"
-              _active={{
-                transform: 'scale(0.98)',
-              }}
-              _focus={{
-                boxShadow:
-                  '0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
-                bg: ' #618fd9',
-                color: 'white',
-              }}
-            >
-              Back
-            </Button>
-          </Link>
+          <BasicButton routeName="/dashboard" buttonName="Back" />
 
           {quizHistory.length != 0 ? (
             <Box m={2}>
-              <DownloadTableExcel
+              <DownloadButton
                 filename={filename}
-                sheet="students"
                 currentTableRef={tableRef.current}
-              >
-                <Button
-                  color="black"
-                  border="2px solid #265e9e"
-                  width="100%"
-                  _active={{
-                    transform: 'scale(0.98)',
-                  }}
-                  _focus={{
-                    boxShadow:
-                      '0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
-                    bg: ' #618fd9',
-                    color: 'white',
-                  }}
-                >
-                  Download Data
-                </Button>
-              </DownloadTableExcel>
+              />
 
               <TableContainer>
                 <Table variant="simple" ref={tableRef}>

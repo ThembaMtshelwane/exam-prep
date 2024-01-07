@@ -14,7 +14,6 @@ const BasicButton: React.FC<BasicButtonProps> = ({ routeName, buttonName }) => {
           <Button
             color="black"
             border="2px solid #265e9e"
-            // width="100%"
             _active={{
               transform: 'scale(0.98)',
             }}

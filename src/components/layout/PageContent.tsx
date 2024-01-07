@@ -18,7 +18,7 @@ const PageContent: React.FC<Props> = ({ children }) => {
         <Flex
           //   width="95%"
           justify="center"
-          maxWidth="860px"
+          maxWidth="75%"
           border="1px solid #11355e"
           direction="column"
           bg="white"

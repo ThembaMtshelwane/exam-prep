@@ -14,9 +14,6 @@ export const getLectureData = async (lectureID:any) =>{
             snippets.push({ ...doc.data()})
          });
 
-        //  console.log('snippets',snippets)
- 
- 
          return { //This will make sure the topics are available gloabally
              props:{
                 lectureInfo:snippets.length!==0
