@@ -1,8 +1,7 @@
-import React, { useState, createContext } from 'react'
+import React, { useState } from 'react'
 import { EditButton } from '../../buttons/EditButton'
 import DisplayList from '../../lists/DisplayList'
 import { Box, Text, Image, Flex } from '@chakra-ui/react'
-import { AddResourcesList } from '../../lists/AddResourcesList'
 
 type previewProps = {
   questionPreview: any

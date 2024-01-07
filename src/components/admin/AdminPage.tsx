@@ -19,7 +19,6 @@ type AdminPageProps = {}
 const AdminPage: React.FC<AdminPageProps> = () => {
   const [user] = useAuthState(auth)
 
-  const [loading, setLoading] = useState(false)
   const { lectureData } = useLectureDataContext()
 
   return (
