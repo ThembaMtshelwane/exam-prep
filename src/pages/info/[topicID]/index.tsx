@@ -70,7 +70,7 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
     }
   }, [])
 
-  console.log('problem areas', studentResults)
+  // console.log('problem areas', studentResults)
 
   return (
     <>
@@ -89,7 +89,7 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
                 currentTableRef={tableRef.current}
               />
 
-              <TableContainer>
+              <TableContainer overflowX="auto">
                 <Table variant="simple" ref={tableRef}>
                   <Thead>
                     <Tr>
@@ -99,16 +99,20 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
                     </Tr>
                   </Thead>
 
+                  {/* <Box maxHeight="300px" overflowY="auto"> */}
                   <Tbody>
                     {studentResults.length !== 0 &&
                       studentResults.map((studentData, index) => (
                         <Tr key={studentData.email}>
                           <Td>{studentData.email}</Td>
                           <Td>{studentData.outcome}</Td>
-                          <Td>{studentData.problemArea.join(', ')}</Td>
+                          <Td width={2}>
+                            {studentData.problemArea.join(', ')}
+                          </Td>
                         </Tr>
                       ))}
                   </Tbody>
+                  {/* </Box> */}
                 </Table>
               </TableContainer>
 
