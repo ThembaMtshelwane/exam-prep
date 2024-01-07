@@ -82,11 +82,13 @@ const TopicBox: React.FC<TopicBoxProps> = ({
           </Text>
           <Text>
             Created at:
-            {new Date(timeOfCreation.seconds * 1000).toLocaleDateString()}
+            {new Date(timeOfCreation.seconds * 1000).toLocaleDateString(
+              'en-GB'
+            )}
           </Text>
           <Text>
             Due date:
-            {new Date(dueDate.seconds * 1000).toLocaleDateString()}
+            {new Date(dueDate.seconds * 1000).toLocaleDateString('en-GB')}
           </Text>
           <Flex flexDirection="row" margin="1rem">
             <a href={topicURL}>
