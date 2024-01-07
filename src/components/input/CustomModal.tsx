@@ -194,9 +194,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
     }))
   }
 
-  console.log(' formData.questionResources', formData.questionResources)
-  
-
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -255,16 +252,18 @@ const CustomModal: React.FC<CustomModalProps> = ({
                 />
               </FormControl>
 
-               <FormControl>
-               <AddResourcesList
+              <FormControl>
+                <AddResourcesList
                   handleResourcesData={handleResourcesData}
                   value={
                     formData.questionResources ? formData.questionResources : []
                   }
                   num={
-                    formData.questionResources ? formData.questionResources.length : 0
+                    formData.questionResources
+                      ? formData.questionResources.length
+                      : 0
                   }
-                /> 
+                />
               </FormControl>
 
               <SaveButton loading={submitting} />

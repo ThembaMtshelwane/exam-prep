@@ -29,16 +29,14 @@ const QuizPage: React.FC<QuizPageProps> = ({ topicQuestionData, name }) => {
             <Heading m={2} p={5}>
               The Preview of {name} Quiz
             </Heading>
-            <h3>Quiz name: {name}</h3>
-            <br />
+            {/* <h3>Quiz name: {name}</h3> */}
+
             <BasicButton
               routeName={studentInfo}
               buttonName={'Student Information'}
             />
-            <br />
-            <br />
             <BasicButton routeName={'/dashboard'} buttonName={'Back'} />
-            <br />
+
             <List width="100%">
               <Stack spacing={5}>
                 {topicQuestionData.map((data: any, index: number) => (

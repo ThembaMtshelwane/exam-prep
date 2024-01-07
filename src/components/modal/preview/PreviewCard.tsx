@@ -50,7 +50,7 @@ const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
 
       <Text>Answer: {questionAnswer}</Text>
       <Text>Level:{questionLevel}</Text>
-      <Text>Learning Objective/s:{questionLearningObjectives}</Text>
+      <Text>Learning Objective/s: {questionLearningObjectives}</Text>
       <DisplayList data={questionOptions} heading={'Options'} />
       {questionResources ? (
         <DisplayList data={questionResources} heading={'Resources'} />

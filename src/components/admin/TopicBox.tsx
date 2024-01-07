@@ -11,6 +11,7 @@ type TopicBoxProps = {
   courseCode: string
   numOfLOs: number
   timeOfCreation: any
+  dueDate: any
 }
 
 const TopicBox: React.FC<TopicBoxProps> = ({
@@ -19,6 +20,7 @@ const TopicBox: React.FC<TopicBoxProps> = ({
   courseCode,
   numOfLOs,
   timeOfCreation,
+  dueDate,
 }) => {
   const [user] = useAuthState(auth)
   const [isLoading, setIsLoading] = useState(false)
@@ -81,6 +83,10 @@ const TopicBox: React.FC<TopicBoxProps> = ({
           <Text>
             Created at:
             {new Date(timeOfCreation.seconds * 1000).toLocaleDateString()}
+          </Text>
+          <Text>
+            Due date:
+            {new Date(dueDate.seconds * 1000).toLocaleDateString()}
           </Text>
           <Flex flexDirection="row" margin="1rem">
             <a href={topicURL}>

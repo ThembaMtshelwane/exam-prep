@@ -1,9 +1,7 @@
 import {
   Box,
-  Button,
   Flex,
   Heading,
-  Icon,
   List,
   ListItem,
   Stack,
@@ -12,7 +10,6 @@ import {
 import React, { useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '@/src/firebase/clientApp'
-import { getLectureData } from '../../pages/api/LectureData'
 import AddQuizIcon from './AddQuiz'
 import TopicBox from './TopicBox'
 import { useLectureDataContext } from './LectureDataProvider'
@@ -23,25 +20,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
   const [user] = useAuthState(auth)
 
   const [loading, setLoading] = useState(false)
-  // const [lectureData, setLectureData] = useState<any[]>([])
   const { lectureData } = useLectureDataContext()
-
-  // useEffect(() => {
-  //     const fetchLectureData = async () => {
-  //       try {
-  //         setLoading(true)
-  //         const data = await getLectureData(user?.uid)
-  //         setLectureData(data?.props.lectureInfo)
-  //         setLoading(false)
-  //       } catch (error) {
-  //         // Handle error if needed
-  //       }
-  //     }
-  //     fetchLectureData()
-
-  // }, [])
-
-  // console.log('lectureData', lectureData)
 
   return (
     <>
@@ -74,6 +53,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
                           courseCode={prevID.courseCode}
                           numOfLOs={prevID.numberOfLearningObjectives}
                           timeOfCreation={prevID.createdAt}
+                          dueDate={prevID.dueDate}
                         />
                       </ListItem>
                     ))

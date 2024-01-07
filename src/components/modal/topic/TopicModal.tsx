@@ -43,10 +43,13 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
   const [LOList, setLOList] = useState([])
   const [loading, setLoading] = useState(false)
   const [isValidQuiz, setIsValidQuiz] = useState(false)
+  const [dueDate, setDueDate] = useState<Date | null>(null)
+  const [dateError, setDateError] = useState('')
 
   const MIN_LEARNING_OBJECTIVES = 4
   const MAX_LEARNING_OBJECTIVES = 8
-  const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleTopicName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     setTopicName(value)
 
@@ -76,7 +79,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
     module_Name = module
   }
 
-  const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNumOfLOs = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     if (!/^[0-9]+$/.test(value)) {
       setNumLoError('Enter a number')
@@ -102,6 +105,18 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
     }))
   }
 
+  const handleDueDateChange = (date: Date | null) => {
+    if (!date) {
+      setDateError('Please select a due date')
+      setDueDate(null)
+      setIsValidQuiz(false)
+    } else {
+      setDueDate(date)
+      setDateError('')
+      setIsValidQuiz(true)
+    }
+  }
+
   const handleCreateQuiz = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setLoading(true)
@@ -119,9 +134,9 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
         const quizInfo = {
           creatorID: user?.email, //creator's ID= user ID
           courseCode: module,
-          createdAt: serverTimestamp(), // created at == time stamp
+          createdAt: serverTimestamp(),
+          dueDate: dueDate,
           topicID: topicName,
-          // Number of learning concepts
           numberOfLearningObjectives: numOfLOs,
           listOFLearningObjectives: LOList,
         }
@@ -187,7 +202,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                   value={topicName}
                   placeholder="GeneralKnowledge"
                   size="sm"
-                  onChange={handleChange1}
+                  onChange={handleTopicName}
                   required
                 ></Input>
 
@@ -195,7 +210,23 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                   {error}
                 </Text>
 
-                <Text fontWeight={600} fontSize={15}>
+                <Text fontWeight={600} fontSize={15} mt={3}>
+                  Due Date:
+                </Text>
+                <Text fontSize="10pt" color="red" mb={3}>
+                  {dateError}
+                </Text>
+                <Input
+                  type="date"
+                  value={dueDate ? dueDate.toISOString().split('T')[0] : ''}
+                  size="sm"
+                  onChange={(e) =>
+                    handleDueDateChange(new Date(e.target.value))
+                  }
+                  required
+                />
+
+                <Text fontWeight={600} fontSize={15} mt={3}>
                   Number of Learning Objectives:
                 </Text>
                 <Text fontSize="10pt" color="red" mb={3}>
@@ -205,7 +236,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                   value={numOfLOs}
                   size="sm"
                   name="numOfLOs"
-                  onChange={handleChange2}
+                  onChange={handleNumOfLOs}
                   required
                 />
                 <Text fontWeight={600} fontSize={15} mt={3} color="#265e9e">
