@@ -76,18 +76,15 @@ const TopicBox: React.FC<TopicBoxProps> = ({
         <Flex direction="column" alignItems="center" textAlign="center">
           <Text>Topic: {topicName}</Text>
           <Text>Course Code: {courseCode}</Text>
+          <Text>Number of learning objectives: {numOfLOs}</Text>
           <Text>
-            Number of learning objectives:
-            {numOfLOs}
-          </Text>
-          <Text>
-            Created at:
+            Created at:{' '}
             {new Date(timeOfCreation.seconds * 1000).toLocaleDateString(
               'en-GB'
             )}
           </Text>
           <Text>
-            Due date:
+            Due date:{' '}
             {new Date(dueDate.seconds * 1000).toLocaleDateString('en-GB')}
           </Text>
           <Flex flexDirection="row" margin="1rem">

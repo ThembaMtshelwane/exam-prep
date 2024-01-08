@@ -36,9 +36,9 @@ const AdminPage: React.FC<AdminPageProps> = () => {
             flexDirection="column"
             mt="20px"
           >
-            <Text fontWeight={600} fontSize={20}>
+            {/* <Text fontWeight={600} fontSize={20}>
               Previously Made Quizzes
-            </Text>
+            </Text> */}
 
             <List width="100%">
               {
