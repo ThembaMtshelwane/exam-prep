@@ -28,51 +28,38 @@ const AdminPage: React.FC<AdminPageProps> = () => {
 
       <AddQuizIcon />
 
-      <Flex align="center" justify="center" mt={5} fontWeight={600}>
-        <Box m={2} p={5} boxShadow="1px 1px 3px 2px rgba(97, 143, 217, .25)">
-          <Flex
-            align="center"
-            justify="center"
-            flexDirection="column"
-            mt="20px"
-          >
-            {/* <Text fontWeight={600} fontSize={20}>
-              Previously Made Quizzes
-            </Text> */}
-
-            <List width="100%">
-              {
-                <Stack spacing={2}>
-                  {lectureData.length != 0 ? (
-                    lectureData.map((prevID: any, index: number) => (
-                      <ListItem key={index}>
-                        <TopicBox
-                          topicURL={`quiz/${prevID.topicID}`}
-                          topicName={prevID.topicID}
-                          courseCode={prevID.courseCode}
-                          numOfLOs={prevID.numberOfLearningObjectives}
-                          timeOfCreation={prevID.createdAt}
-                          dueDate={prevID.dueDate}
-                        />
-                      </ListItem>
-                    ))
-                  ) : (
-                    <Flex
-                      direction="column"
-                      align="center"
-                      justify="center"
-                      m={2}
-                      p={2}
-                    >
-                      <Text>No Available Quiz</Text>
-                    </Flex>
-                  )}
-                </Stack>
-              }
-            </List>
-            <br />
-          </Flex>
-        </Box>
+      <Flex align="center" justify="center" flexDirection="column" m={2} p={5}>
+        <List width="75%">
+          {
+            <Stack spacing={2}>
+              {lectureData.length != 0 ? (
+                lectureData.map((prevID: any, index: number) => (
+                  <ListItem key={index}>
+                    <TopicBox
+                      topicURL={`quiz/${prevID.topicID}`}
+                      topicName={prevID.topicID}
+                      courseCode={prevID.courseCode}
+                      numOfLOs={prevID.numberOfLearningObjectives}
+                      timeOfCreation={prevID.createdAt}
+                      dueDate={prevID.dueDate}
+                    />
+                  </ListItem>
+                ))
+              ) : (
+                <Flex
+                  direction="column"
+                  align="center"
+                  justify="center"
+                  m={2}
+                  p={2}
+                >
+                  <Text>No Available Quiz</Text>
+                </Flex>
+              )}
+            </Stack>
+          }
+        </List>
+        <br />
       </Flex>
     </>
   )

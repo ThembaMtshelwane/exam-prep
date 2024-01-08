@@ -112,6 +112,7 @@ const TopicBox: React.FC<TopicBoxProps> = ({
               }}
               isLoading={isLoading}
               onClick={() => deleteTopic(topicName)}
+              marginLeft="1rem"
             >
               Delete
             </Button>
