@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth, firestore } from '@/src/firebase/clientApp'
 import { useLectureDataContext } from '../admin/LectureDataProvider'
-import { deleteDoc, doc } from 'firebase/firestore'
+import { deleteDoc, doc, getDoc } from 'firebase/firestore'
 
 type DeleteButtonProps = {
   topicName: string
@@ -31,16 +31,23 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ topicName }) => {
       await deleteDoc(quizSnippetDocRef)
       await deleteDoc(topicDocRef)
 
-      // Remove the deleted topic from the cached lecture data
-      const updatedLectureData = lectureData.filter(
-        (topic) => topic.topicName !== topicName
-      )
-      setLectureData(updatedLectureData)
+      // Wait for a short delay to ensure deletion is processed
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
-      console.log(`Topic '${topicName}' deleted successfully.`)
+      const topicDoc = await getDoc(topicDocRef)
+
+      if (topicDoc.exists()) {
+        // Document still exists after deletion
+        console.log(`Topic '${topicName}' was not deleted successfully.`)
+      } else {
+        console.log(`Topic '${topicName}' deleted successfully.`)
+        const updatedLectureData = lectureData.filter(
+          (topic) => topic.topicName !== topicName
+        )
+        setLectureData(updatedLectureData)
+      }
     } catch (error) {
       console.error('Error deleting topic:', error)
-      // Handle error here
     }
     setIsLoading(false)
   }

@@ -139,16 +139,19 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
 
         //- if valid create quiz
         transaction.set(topicsDocRef, quizInfo)
+        console.log(`Topic ${topicName} created successfully.`)
 
         // create quiz snippet for the user=lecture
         transaction.set(
           doc(firestore, `lecturers/${user?.uid}/quizSnippets`, topicName),
           quizInfo
         )
+        // Wait for a short delay to ensure creation is processed
+        await new Promise((resolve) => setTimeout(resolve, 1000))
         router.push(`topics/${topicName}`)
       })
     } catch (error: any) {
-      setError(error.message)
+      setError('Problem in creating quiz')
     }
 
     setLoading(false)

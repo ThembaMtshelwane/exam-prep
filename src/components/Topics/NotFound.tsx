@@ -10,7 +10,7 @@ const NotFound:React.FC = () => {
             alignItems='center'
             minHeight='60vh'
         >
-            Sorry, that topic does not exist or has been delated
+            Sorry, that topic does not exist or has been deleted
             <Link href='/dashboard'>
                 <Button mt={40}>
                     GO HOME
