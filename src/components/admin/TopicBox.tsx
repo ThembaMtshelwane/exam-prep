@@ -1,9 +1,7 @@
-import { auth, firestore } from '@/src/firebase/clientApp'
-import { Box, Button, Flex, Text } from '@chakra-ui/react'
-import { deleteDoc, doc } from 'firebase/firestore'
-import React, { useState } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { useLectureDataContext } from './LectureDataProvider'
+import { Box, Flex, Text } from '@chakra-ui/react'
+import React from 'react'
+import DeleteButton from '../buttons/DeleteButton'
+import PreviewButton from '../buttons/PreviewButton'
 
 type TopicBoxProps = {
   topicURL: string
@@ -22,41 +20,6 @@ const TopicBox: React.FC<TopicBoxProps> = ({
   timeOfCreation,
   dueDate,
 }) => {
-  const [user] = useAuthState(auth)
-  const [isLoading, setIsLoading] = useState(false)
-  const { lectureData, setLectureData } = useLectureDataContext()
-
-  const deleteTopic = async (topicName: string) => {
-    setIsLoading(true)
-    try {
-      // Reference to the document under /lecturers/document/quizSnippets
-      const quizSnippetDocRef = doc(
-        firestore,
-        `lecturers/${user?.uid}/quizSnippets`,
-        topicName
-      )
-
-      // Reference to the document under /topics
-      const topicDocRef = doc(firestore, 'topics', topicName)
-
-      // Delete documents
-      await deleteDoc(quizSnippetDocRef)
-      await deleteDoc(topicDocRef)
-
-      // Remove the deleted topic from the cached lecture data
-      const updatedLectureData = lectureData.filter(
-        (topic) => topic.topicName !== topicName
-      )
-      setLectureData(updatedLectureData)
-
-      console.log(`Topic '${topicName}' deleted successfully.`)
-    } catch (error) {
-      console.error('Error deleting topic:', error)
-      // Handle error here
-    }
-    setIsLoading(false)
-  }
-
   return (
     <div>
       <Box
@@ -88,34 +51,8 @@ const TopicBox: React.FC<TopicBoxProps> = ({
             {new Date(dueDate.seconds * 1000).toLocaleDateString('en-GB')}
           </Text> */}
           <Flex flexDirection="row" margin="1rem">
-            <a href={topicURL}>
-              <Button
-                bg="#265e9e"
-                color="white"
-                _hover={{
-                  bg: 'white',
-                  color: '#265e9e',
-                  transform: 'scale(0.98)',
-                }}
-              >
-                Preview
-              </Button>
-            </a>
-
-            <Button
-              bg="#265e9e"
-              color="white"
-              _hover={{
-                bg: 'white',
-                color: '#265e9e',
-                transform: 'scale(0.98)',
-              }}
-              isLoading={isLoading}
-              onClick={() => deleteTopic(topicName)}
-              marginLeft="1rem"
-            >
-              Delete
-            </Button>
+            <PreviewButton topicURL={topicURL} />
+            <DeleteButton topicName={topicName} />
           </Flex>
         </Flex>
       </Box>
