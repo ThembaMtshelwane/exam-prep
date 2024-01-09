@@ -72,10 +72,6 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
   const handleModuleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     setModule(value)
-    // if (/\s/.test(value)) {
-    //   setError('Module should not contain spaces')
-    //   setIsValidQuiz(false)
-    // }
     module_Name = module
   }
 
@@ -105,17 +101,17 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
     }))
   }
 
-  const handleDueDateChange = (date: Date | null) => {
-    if (!date) {
-      setDateError('Please select a due date')
-      setDueDate(null)
-      setIsValidQuiz(false)
-    } else {
-      setDueDate(date)
-      setDateError('')
-      setIsValidQuiz(true)
-    }
-  }
+  // const handleDueDateChange = (date: Date | null) => {
+  //   if (!date) {
+  //     setDateError('Please select a due date')
+  //     setDueDate(null)
+  //     setIsValidQuiz(false)
+  //   } else {
+  //     setDueDate(date)
+  //     setDateError('')
+  //     setIsValidQuiz(true)
+  //   }
+  // }
 
   const handleCreateQuiz = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -135,7 +131,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
           creatorID: user?.email, //creator's ID= user ID
           courseCode: module,
           createdAt: serverTimestamp(),
-          dueDate: dueDate,
+          // dueDate: dueDate,
           topicID: topicName,
           numberOfLearningObjectives: numOfLOs,
           listOFLearningObjectives: LOList,
@@ -210,7 +206,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                   {error}
                 </Text>
 
-                <Text fontWeight={600} fontSize={15} mt={3}>
+                {/* <Text fontWeight={600} fontSize={15} mt={3}>
                   Due Date:
                 </Text>
                 <Text fontSize="10pt" color="red" mb={3}>
@@ -224,7 +220,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                     handleDueDateChange(new Date(e.target.value))
                   }
                   required
-                />
+                /> */}
 
                 <Text fontWeight={600} fontSize={15} mt={3}>
                   Number of Learning Objectives:
