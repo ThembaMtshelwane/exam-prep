@@ -11,11 +11,12 @@ export const AddOptionsList: React.FC<addOptionsListProps> = ({
   handleOptionsData,
   initialOptions,
 }) => {
-  const [options, setOptions] = useState<string[]>(['', '', '', ''])
-  const placeholders = ['A', 'B', 'C', 'D']
+  const [options, setOptions] = useState<string[]>(['', '', '', '', ''])
+  const placeholders = ['A', 'B', 'C', 'D', 'E']
+  const numberOfOptions = 5
 
   useEffect(() => {
-    setOptions(initialOptions.slice(0, 4)) // Assuming initialOptions has a length of 4 or more
+    setOptions(initialOptions.slice(0, numberOfOptions)) // Assuming initialOptions has a length of 4 or more
   }, [initialOptions])
 
   const handleOptionChange =
@@ -37,7 +38,7 @@ export const AddOptionsList: React.FC<addOptionsListProps> = ({
           name={`option-${index}`}
           handleInputFunction={handleOptionChange(index)}
           placeholder={placeholders[index]}
-          value={options[index]} // Set input field value to the corresponding option
+          value={options[index]}
           isRequired={true}
         />
       ))}

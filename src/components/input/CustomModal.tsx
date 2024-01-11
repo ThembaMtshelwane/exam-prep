@@ -247,7 +247,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
                   initialOptions={
                     formData.questionOptions
                       ? formData.questionOptions
-                      : ['', '', '', '']
+                      : ['', '', '', '', '']
                   }
                 />
               </FormControl>
