@@ -269,6 +269,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ open, handleClose }) => {
                       type="submit"
                       width="50%"
                       isLoading={loading}
+                      mt={5}
                     >
                       Continue
                     </Button>

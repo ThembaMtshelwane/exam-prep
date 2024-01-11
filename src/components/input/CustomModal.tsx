@@ -95,18 +95,35 @@ const CustomModal: React.FC<CustomModalProps> = ({
     }))
   }
 
+  // Randomize options
+  const randomizeOrder = (orderedOptions: string[]) => {
+    for (let i = orderedOptions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[orderedOptions[i], orderedOptions[j]] = [
+        orderedOptions[j],
+        orderedOptions[i],
+      ]
+    }
+    return orderedOptions
+  }
+
   const onSubmit = async () => {
     setSubmitting(true)
+    const orderedOptions = formData.questionOptions
+    // Randomize the order of options
+    const questionOptions = randomizeOrder(orderedOptions)
 
     try {
       if (title === 'Add Question') {
         await setDoc(doc(firestore, `topics/${topicID}/questions/${id}/`), {
           ...formData,
+          questionOptions,
           timestamp: serverTimestamp(),
         })
       } else if (title === 'Edit Question') {
         await updateDoc(doc(firestore, `topics/${topicID}/questions`, id), {
           ...formData,
+          questionOptions,
           timestamp: serverTimestamp(),
         })
       }

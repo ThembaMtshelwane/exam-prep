@@ -23,8 +23,8 @@ export const AddOptionsList: React.FC<addOptionsListProps> = ({
     (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
       const updatedOptions = [...options]
       updatedOptions[index] = event.target.value
-      setOptions(updatedOptions)
       handleOptionsData(updatedOptions) // Sending updated options back to parent component
+      setOptions(updatedOptions)
     }
 
   return (
