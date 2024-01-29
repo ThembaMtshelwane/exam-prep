@@ -18,6 +18,9 @@ export const EditButton: React.FC<editProps> = ({
   updateQuestionPreview,
 }) => {
   const [open, setOpen] = useState(false)
+
+  console.log('id in edit button', questionID)
+
   return (
     <>
       <EditModal

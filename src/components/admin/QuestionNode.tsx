@@ -36,10 +36,10 @@ const QuestionNode: React.FC<
     question: '',
     fileURL: null,
     questionAnswer: '',
-    questionOptions: [],
+    questionOptions: ['', '', '', '', ''],
     questionResources: [],
-    questionID: '',
-    questionLevel: 0,
+    questionID: id,
+    questionLevel: level,
     timestamp: null,
   })
 

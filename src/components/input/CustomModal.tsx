@@ -42,7 +42,7 @@ type CustomModalProps = {
   id: string
   level: number
   onQuestionAdded?: () => void
-  questionPreview?: any
+  questionPreview?: any //FormData
   updateQuestionPreview?: (updatedData: any) => void
 }
 
@@ -57,15 +57,15 @@ const CustomModal: React.FC<CustomModalProps> = ({
   questionPreview,
   updateQuestionPreview,
 }) => {
+  console.log('id', id, 'cale')
   const { register, handleSubmit, reset } = useForm<FormData>()
-  if (questionPreview === undefined) {
-  }
-  const [formData, setFormData] = useState({
+
+  const [formData, setFormData] = useState<FormData>({
     questionLearningObjectives: questionPreview
-      ? questionPreview.questionLearningObjectives || ''
+      ? questionPreview.questionLearningObjectives
       : '',
     question: questionPreview ? questionPreview.question || '' : '',
-    fileURL: questionPreview ? questionPreview.fileURL : null,
+    fileURL: questionPreview ? questionPreview.fileURL : '',
     questionAnswer: questionPreview ? questionPreview.questionAnswer || '' : '',
     questionOptions: questionPreview
       ? questionPreview.questionOptions
@@ -78,14 +78,32 @@ const CustomModal: React.FC<CustomModalProps> = ({
   const [submitting, setSubmitting] = useState(false)
   const toast = useToast()
   const [imageData, setImageData] = useState<string>(
-    questionPreview ? questionPreview.fileURL : null
+    questionPreview ? questionPreview.fileURL : ''
   )
+
+  // const emptyForm = {
+  //   questionLearningObjectives: '',
+  //   question: '',
+  //   fileURL: '',
+  //   questionAnswer: '',
+  //   questionOptions: ['', '', '', '', ''],
+  //   questionResources: [''],
+  //   questionID: '',
+  //   questionLevel: 0,
+  //   timestamp: null,
+  // }
 
   // Update form fields with formData on mount or when questionPreview changes
   useEffect(() => {
+    // if (questionPreview === undefined) {
+    //   setFormData({
+    //     ...emptyForm,
+    //   })
+    // } else {
     setFormData({
       ...questionPreview,
     })
+    // }
   }, [questionPreview])
 
   // Handler function to update formData
@@ -116,19 +134,19 @@ const CustomModal: React.FC<CustomModalProps> = ({
     const questionOptions = randomizeOrder(orderedOptions)
 
     try {
-      if (title === 'Add Question') {
-        await setDoc(doc(firestore, `topics/${topicID}/questions/${id}/`), {
-          ...formData,
-          questionOptions,
-          timestamp: serverTimestamp(),
-        })
-      } else if (title === 'Edit Question') {
-        await updateDoc(doc(firestore, `topics/${topicID}/questions`, id), {
-          ...formData,
-          questionOptions,
-          timestamp: serverTimestamp(),
-        })
-      }
+      // if (title === 'Add Question') {
+      //   await setDoc(doc(firestore, `topics/${topicID}/questions/${id}/`), {
+      //     ...formData,
+      //     questionOptions,
+      //     timestamp: serverTimestamp(),
+      //   })
+      // } else if (title === 'Edit Question') {
+      await updateDoc(doc(firestore, `topics/${topicID}/questions/${id}`), {
+        ...formData,
+        questionOptions,
+        timestamp: serverTimestamp(),
+      })
+      // }
       if (updateQuestionPreview) {
         updateQuestionPreview(formData)
       }
@@ -212,6 +230,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
       questionResources: resourceList, // Update resourceList in the form data
     }))
   }
+
+  // console.log(' formData.questionOptions', formData.questionOptions)
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
