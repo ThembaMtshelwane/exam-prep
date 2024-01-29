@@ -16,7 +16,7 @@ export const AddOptionsList: React.FC<addOptionsListProps> = ({
   const numberOfOptions = 5
 
   useEffect(() => {
-    setOptions(initialOptions.slice(0, numberOfOptions)) // Assuming initialOptions has a length of 4 or more
+    setOptions(initialOptions.slice(0, numberOfOptions)) // Assuming initialOptions has a length of 5 or more
   }, [initialOptions])
 
   const handleOptionChange =

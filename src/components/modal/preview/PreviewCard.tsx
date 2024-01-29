@@ -8,7 +8,10 @@ type previewProps = {
   name: string
 }
 
-const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
+const PreviewCard: React.FC<previewProps> = ({
+  questionPreview,
+  name,
+}) => {
   const [questionPreviewData, setQuestionPreview] = useState<any>({
     ...questionPreview,
   })
@@ -31,13 +34,13 @@ const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
 
   return (
     <Box boxShadow="1px 1px 3px 2px rgba(97, 143, 217, .25)" m={2} p={5}>
-      <Text>Question ID: {questionID}</Text>
-      <Text>Question: {question}</Text>
+      <Text>Question ID: {questionID ? questionID : ''}</Text>
+      <Text>Question: {question ? question : ''}</Text>
       {fileURL ? (
         <Flex justifyContent="center" p="2rem">
           <Image
-            src={fileURL}
-            alt={questionID}
+            src={fileURL ? fileURL : null}
+            alt={questionID ? questionID : 0}
             width="50%"
             height="50% "
             align="center"
@@ -47,10 +50,16 @@ const PreviewCard: React.FC<previewProps> = ({ questionPreview, name }) => {
         ''
       )}
 
-      <Text>Answer: {questionAnswer}</Text>
-      <Text>Level:{questionLevel}</Text>
-      <Text>Learning Objective/s: {questionLearningObjectives}</Text>
-      <DisplayList data={questionOptions} heading={'Options'} />
+      <Text>Answer: {questionAnswer ? questionAnswer : ''}</Text>
+      <Text>Level:{questionLevel ? questionLevel : ''}</Text>
+      <Text>
+        Learning Objective/s:{' '}
+        {questionLearningObjectives ? questionLearningObjectives : ''}
+      </Text>
+      <DisplayList
+        data={questionOptions ? questionOptions : ['', '', '', '', '']}
+        heading={'Options'}
+      />
       {questionResources ? (
         <DisplayList data={questionResources} heading={'Resources'} />
       ) : (

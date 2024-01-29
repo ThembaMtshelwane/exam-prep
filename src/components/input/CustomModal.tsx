@@ -67,7 +67,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
     question: questionPreview ? questionPreview.question || '' : '',
     fileURL: questionPreview ? questionPreview.fileURL : null,
     questionAnswer: questionPreview ? questionPreview.questionAnswer || '' : '',
-    questionOptions: questionPreview ? questionPreview.questionOptions : [],
+    questionOptions: questionPreview
+      ? questionPreview.questionOptions
+      : ['', '', '', '', ''],
     questionResources: questionPreview ? questionPreview.questionResources : [],
     questionID: questionPreview ? questionPreview.questionID : '',
     questionLevel: questionPreview ? questionPreview.questionLevel || 0 : 0,

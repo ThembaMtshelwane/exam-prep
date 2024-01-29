@@ -6,6 +6,7 @@ import PageContent from '@/src/components/layout/PageContent'
 import BasicButton from '@/src/components/buttons/BasicButton'
 import PreviewCard from '@/src/components/modal/preview/PreviewCard'
 import NoData from '@/src/components/texts/NoData'
+import { useLectureDataContext } from '@/src/components/admin/LectureDataProvider'
 
 type QuizPageProps = {
   topicQuestionData: any[]
@@ -13,6 +14,8 @@ type QuizPageProps = {
 }
 const QuizPage: React.FC<QuizPageProps> = ({ topicQuestionData, name }) => {
   const [studentInfo, setStudentInfo] = useState<string>('')
+  // const { lectureData } = useLectureDataContext()
+  // const numOfLOs = lectureData[0].numOfLOs
 
   useEffect(() => {
     const handleName = () => {
