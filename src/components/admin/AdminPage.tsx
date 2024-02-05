@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '@/src/firebase/clientApp'
 import AddQuizIcon from './AddQuiz'
@@ -18,8 +18,8 @@ type AdminPageProps = {}
 
 const AdminPage: React.FC<AdminPageProps> = () => {
   const [user] = useAuthState(auth)
-
   const { lectureData } = useLectureDataContext()
+  const [loading, setLoading] = useState(true)
 
   return (
     <>

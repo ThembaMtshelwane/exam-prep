@@ -12,7 +12,7 @@ import { getLectureData } from '../../pages/api/LectureData'
 import { auth } from '@/src/firebase/clientApp'
 
 type LectureDataProviderProps = {
-  children: ReactNode // Define children prop explicitly as ReactNode
+  children: ReactNode
 }
 
 type LectureDataContextType = {
@@ -41,19 +41,11 @@ const LectureDataProvider: React.FC<LectureDataProviderProps> = (props) => {
           JSON.stringify(data?.props.lectureInfo || [])
         )
       } catch (error) {
-        // Handle error if needed
+        console.log(error)
       }
     }
     fetchData()
-    if (!lectureData.length) {
-      const cachedData = localStorage.getItem('lectureData')
-      if (cachedData) {
-        setLectureDataState(JSON.parse(cachedData))
-      } else {
-        fetchData()
-      }
-    }
-  })
+  }, [user?.uid])
 
   const setLectureData: Dispatch<SetStateAction<any[]>> = (
     data: SetStateAction<any[]>

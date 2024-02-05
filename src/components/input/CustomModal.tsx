@@ -57,7 +57,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
   questionPreview,
   updateQuestionPreview,
 }) => {
-  console.log('id', id, 'cale')
   const { register, handleSubmit, reset } = useForm<FormData>()
 
   const [formData, setFormData] = useState<FormData>({
