@@ -144,10 +144,10 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
 
           {quizHistory.length != 0 ? (
             <Box m={2}>
-              <Flex alignItems="center" justifyContent='center'>
+              <Flex alignItems="center" justifyContent="center">
                 <DownloadButton
                   filename={filename}
-                  currentTableRef={tableRef.current}
+                  studentResults={studentResults}
                 />
                 <DeleteButton topicName={name} deleteType="deleteQuizHistory" />
               </Flex>

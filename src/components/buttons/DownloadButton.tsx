@@ -1,40 +1,61 @@
 import { Button, Flex } from '@chakra-ui/react'
 import React from 'react'
-import { DownloadTableExcel } from 'react-export-table-to-excel'
+
+type StudentResult = {
+  email: string
+  outcome: string
+  problemArea: string[]
+}
 
 type DownloadButtonProps = {
   filename: string
-  currentTableRef: any
+  studentResults: StudentResult[]
 }
 
 const DownloadButton: React.FC<DownloadButtonProps> = ({
   filename,
-  currentTableRef,
+  studentResults,
 }) => {
+  const handleDownload = async () => {
+    try {
+      const response = await fetch('/api/download-excel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ studentResults }),
+      })
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${filename}.xls`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Error downloading Excel file:', error)
+    }
+  }
   return (
     <Flex flexDirection="row" justify="center" align="center" m={5}>
-      <DownloadTableExcel
-        filename={filename}
-        sheet="students"
-        currentTableRef={currentTableRef}
+      <Button
+        color="black"
+        border="2px solid #265e9e"
+        width="100%"
+        _active={{
+          transform: 'scale(0.98)',
+        }}
+        _focus={{
+          boxShadow:
+            '0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
+          bg: ' #618fd9',
+          color: 'white',
+        }}
+        onClick={handleDownload}
       >
-        <Button
-          color="black"
-          border="2px solid #265e9e"
-          width="100%"
-          _active={{
-            transform: 'scale(0.98)',
-          }}
-          _focus={{
-            boxShadow:
-              '0 0 1px 2px rgba(97, 143, 217, .75), 0 1px 1px rgba(0, 0, 0, .15)',
-            bg: ' #618fd9',
-            color: 'white',
-          }}
-        >
-          Download Data
-        </Button>
-      </DownloadTableExcel>
+        Download Data
+      </Button>
     </Flex>
   )
 }
