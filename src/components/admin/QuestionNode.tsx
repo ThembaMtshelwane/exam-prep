@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Flex, Box } from '@chakra-ui/react'
-import AddButton from '../buttons/AddButton'
-import AddModal from './AddModal'
+// import AddButton from '../buttons/AddButton'
+// import AddModal from './AddModal'
 import { EditButton } from '../buttons/EditButton'
 import { firestore } from '@/src/firebase/clientApp'
 import { setDoc } from '@firebase/firestore'
@@ -55,20 +55,20 @@ const QuestionNode: React.FC<
       }
     }
     createDefault()
-  }, [])
+  }, [formData])
 
-  const handleQuestionAdded = () => {
-    setQuestionAdded(true)
-    onQuestionAdded()
-    closeAddModal()
-  }
-  const openAddModal = () => {
-    setIsModalOpen(true)
-  }
+  // const handleQuestionAdded = () => {
+  //   setQuestionAdded(true)
+  //   onQuestionAdded()
+  //   closeAddModal()
+  // }
+  // const openAddModal = () => {
+  //   setIsModalOpen(true)
+  // }
 
-  const closeAddModal = () => {
-    setIsModalOpen(false)
-  }
+  // const closeAddModal = () => {
+  //   setIsModalOpen(false)
+  // }
 
   return (
     <div>

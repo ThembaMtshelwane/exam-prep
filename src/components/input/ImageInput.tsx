@@ -89,7 +89,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
       </Button>
       {isEditImage ? (
         <>
-          <Image src={fileLink} />
+          <Image src={fileLink} alt={fileLink} />
           <input
             type="file"
             onChange={(event) => {
