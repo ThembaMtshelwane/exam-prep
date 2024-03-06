@@ -34,6 +34,14 @@ const LectureDataProvider: React.FC<LectureDataProviderProps> = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // let cachedData = localStorage.getItem('lectureData')
+        // if (cachedData) {
+        //   setLectureDataState(JSON.parse(cachedData))
+        // }
+        // const freshData = await getFreshData()
+        // setLectureDataState(freshData)
+        // localStorage.setItem('lectureData', JSON.stringify(freshData))
+
         const data = await getLectureData(user?.uid)
         setLectureDataState(data?.props.lectureInfo || [])
         localStorage.setItem(
@@ -45,8 +53,12 @@ const LectureDataProvider: React.FC<LectureDataProviderProps> = (props) => {
       }
     }
     fetchData()
-  }, [user?.uid])
+  }, [lectureData])
 
+  // const getFreshData = async () => {
+  //   const data = await getLectureData(user?.uid)
+  //   return data?.props.lectureInfo || []
+  // }
   const setLectureData: Dispatch<SetStateAction<any[]>> = (
     data: SetStateAction<any[]>
   ) => {

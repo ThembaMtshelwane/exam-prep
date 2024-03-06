@@ -48,21 +48,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // get the appropriate collection based on the router input
     const topicQuestionsCollectionRef = `topics/${name}/questions`
 
-    console.log('Fetching data from:', topicQuestionsCollectionRef)
-
     // get questions collection from database
     const questionsFromDB = await getDocs(
       collection(firestore, topicQuestionsCollectionRef)
     )
-
-    // console.log('Questions from DB:', questionsFromDB)
 
     // store all questions from the database into the questions array
     questionsFromDB.forEach((doc) => {
       questions.push({ ...doc.data() })
     })
 
-    console.log('Questions from DB in questions array:', questions)
     return {
       props: {
         topicData: topicDoc.exists()

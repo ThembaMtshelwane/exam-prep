@@ -4,8 +4,8 @@ import safeJsonStringify from "safe-json-stringify";
 
 export const getLectureData = async (lectureID:any) =>{
     try {
-        const LectureQuizCollectionRef = `/lecturers/${lectureID}/quizSnippets`// the quiz snippets collection reference
-        const quizSnippetsFromDB = await getDocs(collection(firestore,LectureQuizCollectionRef)) // get the quiz snippets  collection from database
+        const LectureQuizCollectionRef = `/lecturers/${lectureID}/quizSnippets`
+        const quizSnippetsFromDB = await getDocs(collection(firestore,LectureQuizCollectionRef)) 
                 
          let snippets:any[] =[]
  
