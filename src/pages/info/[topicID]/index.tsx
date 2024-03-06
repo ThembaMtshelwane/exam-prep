@@ -3,8 +3,6 @@ import { GetServerSidePropsContext } from 'next'
 import {
   Box,
   Heading,
-  Button,
-  Link,
   Tr,
   Table,
   Thead,
@@ -13,13 +11,25 @@ import {
   Td,
   TableContainer,
   Text,
+  Flex,
 } from '@chakra-ui/react'
-import { DownloadTableExcel } from 'react-export-table-to-excel'
-
 import { getAllUsers } from '../../api/UserData'
 import PageContent from '@/src/components/layout/PageContent'
 import BasicButton from '@/src/components/buttons/BasicButton'
 import DownloadButton from '@/src/components/buttons/DownloadButton'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js'
+import { Bar } from 'react-chartjs-2'
+import DeleteButton from '@/src/components/buttons/DeleteButton'
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 type StudentResult = {
   email: string
@@ -54,7 +64,7 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
             (outcome: { result: string }) => outcome.result === 'correct'
           ).length
           const percentage = (
-            (correctCount / (history.results.length - 1)) *
+            (correctCount / history.results.length) *
             100
           ).toFixed(2)
           const problemAreas = history.results.map((result) => result.loText)
@@ -70,7 +80,57 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
     }
   }, [])
 
-  // console.log('problem areas', studentResults)
+  // Extract problem areas and count occurrences
+  const problemAreasCount: { [key: string]: number } = studentResults.reduce(
+    (acc: any, curr: any) => {
+      curr.problemArea.forEach((area: any) => {
+        acc[area] = (acc[area] || 0) + 1
+      })
+      return acc
+    },
+    {}
+  )
+
+  const problemAreasData = Object.keys(problemAreasCount).map((key) => ({
+    problemArea: key,
+    count: problemAreasCount[key],
+  }))
+
+  problemAreasData.sort((a, b) => b.count - a.count)
+
+  const chartData = {
+    labels: problemAreasData.map((data) => data.problemArea),
+    datasets: [
+      {
+        label: 'Number of Students',
+        data: problemAreasData.map((data) => data.count),
+        backgroundColor: 'rgba(75,192,192,0.4)',
+        borderColor: 'rgba(75,192,192,1)',
+        borderWidth: 1,
+      },
+    ],
+  }
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Student Problem Areas',
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          maxRotation: 90,
+          minRotation: 90,
+        },
+      },
+    },
+  }
 
   return (
     <>
@@ -80,14 +140,17 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
             Student Information for {name} Quiz
           </Heading>
 
-          <BasicButton routeName="/dashboard" buttonName="Back" />
+          <BasicButton routeName={`/quiz/${name}`} buttonName="Back" />
 
           {quizHistory.length != 0 ? (
             <Box m={2}>
-              <DownloadButton
-                filename={filename}
-                currentTableRef={tableRef.current}
-              />
+              <Flex alignItems="center" justifyContent='center'>
+                <DownloadButton
+                  filename={filename}
+                  currentTableRef={tableRef.current}
+                />
+                <DeleteButton topicName={name} deleteType="deleteQuizHistory" />
+              </Flex>
 
               <TableContainer overflowX="auto">
                 <Table variant="simple" ref={tableRef}>
@@ -95,28 +158,24 @@ const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
                     <Tr>
                       <Th>Student Email</Th>
                       <Th>Results %</Th>
-                      <Th>Problem Area/s</Th>
                     </Tr>
                   </Thead>
 
-                  {/* <Box maxHeight="300px" overflowY="auto"> */}
                   <Tbody>
                     {studentResults.length !== 0 &&
                       studentResults.map((studentData, index) => (
                         <Tr key={studentData.email}>
                           <Td>{studentData.email}</Td>
                           <Td>{studentData.outcome}</Td>
-                          <Td width={2}>
-                            {studentData.problemArea.join(', ')}
-                          </Td>
                         </Tr>
                       ))}
                   </Tbody>
-                  {/* </Box> */}
                 </Table>
               </TableContainer>
 
-              <BasicButton routeName="/dashboard" buttonName="Back" />
+              <Bar data={chartData} options={options} />
+
+              <BasicButton routeName={`/quiz/${name}`} buttonName="Back" />
             </Box>
           ) : (
             <Box>

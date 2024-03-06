@@ -3,13 +3,17 @@ import React, { useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth, firestore } from '@/src/firebase/clientApp'
 import { useLectureDataContext } from '../admin/LectureDataProvider'
-import { deleteDoc, doc, getDoc } from 'firebase/firestore'
+import { collection, deleteDoc, doc, getDoc, getDocs } from 'firebase/firestore'
 
 type DeleteButtonProps = {
   topicName: string
+  deleteType: string
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({ topicName }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({
+  topicName,
+  deleteType,
+}) => {
   const [user] = useAuthState(auth)
   const [isLoading, setIsLoading] = useState(false)
   const { lectureData, setLectureData } = useLectureDataContext()
@@ -51,21 +55,78 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ topicName }) => {
     }
     setIsLoading(false)
   }
+
+  const deleteQuizHistory = async (topicName: string) => {
+    setIsLoading(true)
+    try {
+      // Reference to the collection under topics/name/quizHistory
+      const quizHistoryCollectionRef = collection(
+        firestore,
+        `topics/${topicName}/quizHistory`
+      )
+
+      // Delete all documents within the collection
+      const querySnapshot = await getDocs(quizHistoryCollectionRef)
+      querySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref)
+      })
+
+      // Wait for a short delay to ensure deletion is processed
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      // Check if the collection still exists after deletion
+      const quizHistoryCollection = await getDocs(quizHistoryCollectionRef)
+
+      if (!quizHistoryCollection.empty) {
+        // Collection still exists after deletion
+        console.log(
+          `Student data for ${topicName} quiz was not deleted successfully.`
+        )
+      } else {
+        console.log(
+          `Student data for ${topicName} quiz is deleted successfully.`
+        )
+      }
+    } catch (error) {
+      console.error('Error deleting topic:', error)
+    }
+    setIsLoading(false)
+  }
+
   return (
-    <Button
-      bg="#265e9e"
-      color="white"
-      _hover={{
-        bg: 'white',
-        color: '#265e9e',
-        transform: 'scale(0.98)',
-      }}
-      isLoading={isLoading}
-      onClick={() => deleteTopic(topicName)}
-      marginLeft="1rem"
-    >
-      Delete
-    </Button>
+    <div>
+      {deleteType == 'deleteTopic' ? (
+        <Button
+          bg="#265e9e"
+          color="white"
+          _hover={{
+            bg: 'white',
+            color: '#265e9e',
+            transform: 'scale(0.98)',
+          }}
+          isLoading={isLoading}
+          onClick={() => deleteTopic(topicName)}
+          marginLeft="1rem"
+        >
+          Delete
+        </Button>
+      ) : (
+        <Button
+          bg="#265e9e"
+          color="white"
+          _hover={{
+            bg: 'white',
+            color: '#265e9e',
+            transform: 'scale(0.98)',
+          }}
+          isLoading={isLoading}
+          onClick={() => deleteQuizHistory(topicName)}
+          marginLeft="1rem"
+        >
+          Delete All History
+        </Button>
+      )}
+    </div>
   )
 }
 export default DeleteButton

@@ -52,7 +52,7 @@ const TopicBox: React.FC<TopicBoxProps> = ({
           </Text> */}
           <Flex flexDirection="row" margin="1rem">
             <PreviewButton topicURL={topicURL} />
-            <DeleteButton topicName={topicName} />
+            <DeleteButton topicName={topicName} deleteType="deleteTopic" />
           </Flex>
         </Flex>
       </Box>
