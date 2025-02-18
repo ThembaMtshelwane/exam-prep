@@ -1,16 +1,16 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
-import React from 'react'
-import DeleteButton from '../buttons/DeleteButton'
-import PreviewButton from '../buttons/PreviewButton'
+import { Box, Flex, Text } from "@chakra-ui/react";
+import React from "react";
+import DeleteButton from "../buttons/DeleteButton";
+import PreviewButton from "../buttons/PreviewButton";
 
 type TopicBoxProps = {
-  topicURL: string
-  topicName: string
-  courseCode: string
-  numOfLOs: number
-  timeOfCreation: any
-  dueDate: any
-}
+  topicURL: string;
+  topicName: string;
+  courseCode: string;
+  numOfLOs: number;
+  timeOfCreation: any;
+  dueDate: any;
+};
 
 const TopicBox: React.FC<TopicBoxProps> = ({
   topicURL,
@@ -26,11 +26,11 @@ const TopicBox: React.FC<TopicBoxProps> = ({
         fontWeight={700}
         bg="white"
         boxShadow="1px 1px 1px 2px rgba(97, 143, 217, .75)"
-        p="10px"
+        p="5px"
         _hover={{
-          bg: '#265e9e',
-          color: 'white',
-          transform: 'scale(0.98)',
+          bg: "#265e9e",
+          color: "white",
+          transform: "scale(0.98)",
         }}
         width="95%"
         height="50%"
@@ -41,9 +41,9 @@ const TopicBox: React.FC<TopicBoxProps> = ({
           <Text>Course Code: {courseCode}</Text>
           <Text>Number of learning objectives: {numOfLOs}</Text>
           <Text>
-            Created at:{' '}
+            Created at:{" "}
             {new Date(timeOfCreation.seconds * 1000).toLocaleDateString(
-              'en-GB'
+              "en-GB"
             )}
           </Text>
           {/* <Text>
@@ -57,6 +57,6 @@ const TopicBox: React.FC<TopicBoxProps> = ({
         </Flex>
       </Box>
     </div>
-  )
-}
-export default TopicBox
+  );
+};
+export default TopicBox;
