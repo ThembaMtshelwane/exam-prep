@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { GetServerSidePropsContext } from 'next'
+import React, { useEffect, useRef, useState, useMemo } from "react";
+import { GetServerSidePropsContext } from "next";
 import {
   Box,
   Heading,
@@ -12,11 +12,13 @@ import {
   TableContainer,
   Text,
   Flex,
-} from '@chakra-ui/react'
-import { getAllUsers } from '../../api/UserData'
-import PageContent from '@/src/components/layout/PageContent'
-import BasicButton from '@/src/components/buttons/BasicButton'
-import DownloadButton from '@/src/components/buttons/DownloadButton'
+} from "@chakra-ui/react";
+import { getAllUsers } from "../../api/UserData";
+import PageContent from "@/src/components/layout/PageContent";
+import BasicButton from "@/src/components/buttons/BasicButton";
+import DownloadButton from "@/src/components/buttons/DownloadButton";
+import DeleteButton from "@/src/components/buttons/DeleteButton";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -25,171 +27,163 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js'
-import { Bar } from 'react-chartjs-2'
-import DeleteButton from '@/src/components/buttons/DeleteButton'
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 type StudentResult = {
-  email: string
-  outcome: string
-  problemArea: string[]
-}
-
-type QuizPageProps = {
-  userData: any[]
-  name: string
-  quizHistory: any[]
-}
+  email: string;
+  outcome: string;
+  problemArea: string[];
+};
 
 type HistoryEntry = {
-  studentID: string
-  results: { result: string; loText: string }[]
-}
+  studentID: string;
+  results: { result: string; loText: string }[];
+};
+
+type QuizPageProps = {
+  name: string;
+  quizHistory: HistoryEntry[];
+};
 
 const QuizPage: React.FC<QuizPageProps> = ({ name, quizHistory }) => {
-  const [studentResults, setStudentResults] = useState<StudentResult[]>([])
-  const [filename, setFilename] = useState<string>(
-    `${name} quiz - student info`
-  )
-  const [show, setShow] = useState<boolean>(false)
-  const tableRef = useRef(null)
+  const [studentResults, setStudentResults] = useState<StudentResult[]>([]);
+  const [filename, setFilename] = useState(`${name} quiz - student info`);
+  const tableRef = useRef<HTMLTableElement | null>(null);
 
   useEffect(() => {
-    if (quizHistory.length != 0) {
-      const newStudentResults = quizHistory.map(
-        (history: HistoryEntry, index: number) => {
-          const correctCount = history.results.filter(
-            (outcome: { result: string }) => outcome.result === 'correct'
-          ).length
-          const percentage = (
-            (correctCount / history.results.length) *
-            100
-          ).toFixed(2)
-          const problemAreas = history.results.map((result) => result.loText)
-          return {
-            email: history.studentID,
-            outcome: percentage,
-            problemArea: problemAreas,
-          }
-        }
-      )
-      setStudentResults(newStudentResults)
-      setShow(true)
+    if (quizHistory.length > 0) {
+      const newStudentResults = quizHistory.map((history) => {
+        const correctCount = history.results.filter(
+          (outcome) => outcome.result === "correct"
+        ).length;
+        const percentage = (
+          (correctCount / history.results.length) *
+          100
+        ).toFixed(2);
+        return {
+          email: history.studentID,
+          outcome: percentage,
+          problemArea: history.results
+            .filter((result) => result.result !== "correct")
+            .map((result) => result.loText),
+        };
+      });
+
+      setStudentResults(newStudentResults);
     }
-  }, [])
+  }, [quizHistory]);
 
   // Extract problem areas and count occurrences
-  const problemAreasCount: { [key: string]: number } = studentResults.reduce(
-    (acc: any, curr: any) => {
-      curr.problemArea.forEach((area: any) => {
-        acc[area] = (acc[area] || 0) + 1
-      })
-      return acc
-    },
-    {}
-  )
+  const problemAreasCount: Record<string, number> = useMemo(() => {
+    return studentResults.reduce((acc, curr) => {
+      curr.problemArea.forEach((area) => {
+        acc[area] = (acc[area] || 0) + 1;
+      });
+      return acc;
+    }, {} as Record<string, number>);
+  }, [studentResults]);
 
-  const problemAreasData = Object.keys(problemAreasCount).map((key) => ({
-    problemArea: key,
-    count: problemAreasCount[key],
-  }))
+  const problemAreasData = useMemo(
+    () =>
+      Object.entries(problemAreasCount)
+        .map(([problemArea, count]) => ({ problemArea, count }))
+        .sort((a, b) => b.count - a.count),
+    [problemAreasCount]
+  );
 
-  problemAreasData.sort((a, b) => b.count - a.count)
+  const chartData = useMemo(
+    () => ({
+      labels: problemAreasData.map((data) => data.problemArea),
+      datasets: [
+        {
+          label: "Number of Students",
+          data: problemAreasData.map((data) => data.count),
+          backgroundColor: "rgba(75,192,192,0.4)",
+          borderColor: "rgba(75,192,192,1)",
+          borderWidth: 1,
+        },
+      ],
+    }),
+    [problemAreasData]
+  );
 
-  const chartData = {
-    labels: problemAreasData.map((data) => data.problemArea),
-    datasets: [
-      {
-        label: 'Number of Students',
-        data: problemAreasData.map((data) => data.count),
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: 'rgba(75,192,192,1)',
-        borderWidth: 1,
-      },
-    ],
-  }
-
-  const options = {
+  const chartOptions = {
     responsive: true,
     plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'Student Problem Areas',
-      },
+      legend: { position: "top" as const },
+      title: { display: true, text: "Student Problem Areas" },
     },
     scales: {
-      x: {
-        ticks: {
-          maxRotation: 90,
-          minRotation: 90,
-        },
-      },
+      x: { ticks: { maxRotation: 0, minRotation: 0 } },
     },
-  }
+  };
 
   return (
-    <>
-      <PageContent>
-        <Box m={2} p={5}>
-          <Heading m={2} p={5}>
-            Student Information for {name} Quiz
-          </Heading>
+    <PageContent>
+      <Box m={2} p={5}>
+        <Heading m={2} p={5}>{`Student Information for ${name} Quiz`}</Heading>
 
-          <BasicButton routeName={`/quiz/${name}`} buttonName="Back" />
+        <BasicButton routeName={`/quiz/${name}`} buttonName="Back" />
 
-          {quizHistory.length != 0 ? (
-            <Box m={2}>
-              <Flex alignItems="center" justifyContent="center">
-                <DownloadButton
-                  filename={filename}
-                  studentResults={studentResults}
-                />
-                <DeleteButton topicName={name} deleteType="deleteQuizHistory" />
-              </Flex>
+        {quizHistory.length > 0 ? (
+          <Box m={2}>
+            <Flex
+              alignItems="center"
+              justifyContent="center"
+              flexDirection={{ mdToXl: "column" }}
+            >
+              <DownloadButton
+                filename={filename}
+                studentResults={studentResults}
+              />
+              <DeleteButton topicName={name} deleteType="deleteQuizHistory" />
+            </Flex>
 
-              <TableContainer overflowX="auto">
-                <Table variant="simple" ref={tableRef}>
-                  <Thead>
-                    <Tr>
-                      <Th>Student Email</Th>
-                      <Th>Results %</Th>
+            <TableContainer overflowX="auto">
+              <Table variant="simple" ref={tableRef}>
+                <Thead>
+                  <Tr>
+                    <Th>Student Email</Th>
+                    <Th>Results %</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {studentResults.map((studentData) => (
+                    <Tr key={studentData.email}>
+                      <Td>{studentData.email}</Td>
+                      <Td>{studentData.outcome}</Td>
                     </Tr>
-                  </Thead>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
 
-                  <Tbody>
-                    {studentResults.length !== 0 &&
-                      studentResults.map((studentData, index) => (
-                        <Tr key={studentData.email}>
-                          <Td>{studentData.email}</Td>
-                          <Td>{studentData.outcome}</Td>
-                        </Tr>
-                      ))}
-                  </Tbody>
-                </Table>
-              </TableContainer>
+            <Bar data={chartData} options={chartOptions} />
 
-              <Bar data={chartData} options={options} />
-
-              <BasicButton routeName={`/quiz/${name}`} buttonName="Back" />
-            </Box>
-          ) : (
-            <Box>
-              <Text>Data is not available. Students must answer the quiz</Text>
-            </Box>
-          )}
-        </Box>
-      </PageContent>
-    </>
-  )
-}
+            <BasicButton routeName={`/quiz/${name}`} buttonName="Back" />
+          </Box>
+        ) : (
+          <Box>
+            <Text>Data is not available. Students must answer the quiz</Text>
+          </Box>
+        )}
+      </Box>
+    </PageContent>
+  );
+};
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  return getAllUsers(context)
+  return getAllUsers(context);
 }
 
-export default QuizPage
+export default QuizPage;

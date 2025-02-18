@@ -1,73 +1,72 @@
-import fs from 'fs'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse } from "next";
+import ExcelJS from "exceljs";
 
 type StudentResult = {
-  email: string
-  outcome: string
-  problemArea: string[]
-}
+  email: string;
+  outcome: string;
+  problemArea: string[];
+};
 
-// Function to generate Excel content
-const generateExcelContent = (studentResults: StudentResult[]) => {
-  const tableHeading = 'Student Email \t Results %\n'
-  const tableData = studentResults
-    .map((student) => {
-      return `${student.email} \t ${student.outcome}\n`
-    })
-    .join('')
-  const tableInfo = tableHeading + tableData
-
-  // Extract problem areas and count occurrences
-  const problemAreasCount: { [key: string]: number } = studentResults.reduce(
-    (acc: any, curr: any) => {
-      curr.problemArea.forEach((area: any) => {
-        acc[area] = (acc[area] || 0) + 1
-      })
-      return acc
-    },
-    {}
-  )
-
-  const problemAreasData = Object.keys(problemAreasCount).map((key) => ({
-    problemArea: key,
-    count: problemAreasCount[key],
-  }))
-
-  const graphHeading = 'Problem Area \t Number of students\n'
-  const graphData = problemAreasData
-    .map((data) => {
-      return `${data.problemArea} \t ${data.count}\n`
-    })
-    .join('')
-
-  const graphInfo = 'Graph Data\n' + graphHeading + graphData
-  return `${tableInfo}\n${graphInfo}`
-}
-
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
-    // Get quizHistory data from the request body
-    const { studentResults }: { studentResults: StudentResult[] } = req.body
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method Not Allowed" });
+    }
 
-    // Generate Excel file content using quizHistory data
-    const excelContent = generateExcelContent(studentResults)
+    const { studentResults }: { studentResults: StudentResult[] } = req.body;
 
-    const filename = 'data.xlsx'
+    if (!studentResults || studentResults.length === 0) {
+      return res.status(400).json({ error: "No student data provided" });
+    }
 
-    // Write content to a temporary file
-    fs.writeFileSync(filename, excelContent)
+    // Create a new Excel workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Student Results");
 
-    // Serve the file as a downloadable attachment
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+    // Add headers
+    worksheet.addRow(["Student Email", "Results %"]);
+
+    // Add student data
+    studentResults.forEach((student) => {
+      worksheet.addRow([student.email, student.outcome]);
+    });
+
+    // Add problem area analysis
+    worksheet.addRow([]); // Empty row for spacing
+    worksheet.addRow(["Problem Area", "Number of Students"]);
+
+    // Count occurrences of problem areas
+    const problemAreasCount: { [key: string]: number } = studentResults.reduce(
+      (acc, curr) => {
+        curr.problemArea.forEach((area) => {
+          acc[area] = (acc[area] || 0) + 1;
+        });
+        return acc;
+      },
+      {} as { [key: string]: number }
+    );
+
+    // Add problem area data
+    Object.entries(problemAreasCount).forEach(([area, count]) => {
+      worksheet.addRow([area, count]);
+    });
+
+    // Generate the Excel file in memory
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    // Set response headers for file download
+    res.setHeader("Content-Disposition", 'attachment; filename="data.xlsx"');
     res.setHeader(
-      'Content-Type',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-    res.status(200).send(fs.readFileSync(filename))
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
 
-    // Cleanup: Delete the temporary file after download is completed or failed
-    fs.unlinkSync(filename)
+    return res.status(200).send(Buffer.from(buffer));
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' })
+    console.error("Error generating Excel file:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 }
